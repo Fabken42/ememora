@@ -14,11 +14,9 @@ interface Props {
 export default function ImageUpload({ value, onChange, label }: Props) {
   const inputRef = useRef<HTMLInputElement>(null);
   const [loading, setLoading] = useState(false);
+  const [isDragging, setIsDragging] = useState(false);
 
-  async function handleFile(e: React.ChangeEvent<HTMLInputElement>) {
-    const file = e.target.files?.[0];
-    if (!file) return;
-
+  async function uploadFile(file: File) {
     setLoading(true);
     try {
       const fd = new FormData();
@@ -35,6 +33,28 @@ export default function ImageUpload({ value, onChange, label }: Props) {
       setLoading(false);
       if (inputRef.current) inputRef.current.value = "";
     }
+  }
+
+  function handleFileInput(e: React.ChangeEvent<HTMLInputElement>) {
+    const file = e.target.files?.[0];
+    if (file) uploadFile(file);
+  }
+
+  function handleDragOver(e: React.DragEvent) {
+    e.preventDefault();
+    setIsDragging(true);
+  }
+
+  function handleDragLeave(e: React.DragEvent) {
+    e.preventDefault();
+    setIsDragging(false);
+  }
+
+  function handleDrop(e: React.DragEvent) {
+    e.preventDefault();
+    setIsDragging(false);
+    const file = e.dataTransfer.files?.[0];
+    if (file) uploadFile(file);
   }
 
   return (
@@ -56,15 +76,24 @@ export default function ImageUpload({ value, onChange, label }: Props) {
         <button
           type="button"
           onClick={() => inputRef.current?.click()}
+          onDragOver={handleDragOver}
+          onDragLeave={handleDragLeave}
+          onDrop={handleDrop}
           disabled={loading}
-          className="w-full h-32 rounded-lg border-2 border-dashed border-slate-300 flex flex-col items-center justify-center gap-2 text-slate-400 hover:border-indigo-400 hover:text-indigo-500 transition-colors disabled:opacity-60"
+          className={`w-full h-32 rounded-lg border-2 border-dashed flex flex-col items-center justify-center gap-2 transition-colors disabled:opacity-60 ${
+            isDragging
+              ? "border-indigo-500 bg-indigo-50 text-indigo-600"
+              : "border-slate-300 text-slate-400 hover:border-indigo-400 hover:text-indigo-500"
+          }`}
         >
           {loading ? (
             <div className="w-5 h-5 border-2 border-indigo-400 border-t-transparent rounded-full animate-spin" />
           ) : (
             <>
               <Upload size={20} />
-              <span className="text-xs">Clique para enviar imagem</span>
+              <span className="text-xs">
+                {isDragging ? "Solte para enviar" : "Clique ou arraste uma imagem"}
+              </span>
             </>
           )}
         </button>
@@ -75,7 +104,7 @@ export default function ImageUpload({ value, onChange, label }: Props) {
         type="file"
         accept="image/jpeg,image/png,image/webp,image/gif"
         className="hidden"
-        onChange={handleFile}
+        onChange={handleFileInput}
       />
 
       {!value && (

@@ -5,6 +5,7 @@ import { connectDB } from "@/lib/mongodb";
 import Term from "@/models/Term";
 import StudyList from "@/models/StudyList";
 import mongoose from "mongoose";
+import { deleteImages } from "@/lib/cloudinary";
 
 type Params = { id: string; termId: string };
 
@@ -31,6 +32,14 @@ export async function PUT(req: NextRequest, { params }: { params: Promise<Params
   const body = await req.json();
   const { concept, definition, conceptImage, definitionImage, status } = body;
 
+  const toDelete: (string | undefined)[] = [];
+  if (conceptImage !== undefined && term.conceptImage && term.conceptImage !== conceptImage) {
+    toDelete.push(term.conceptImage);
+  }
+  if (definitionImage !== undefined && term.definitionImage && term.definitionImage !== definitionImage) {
+    toDelete.push(term.definitionImage);
+  }
+
   if (concept !== undefined) term.concept = concept.trim();
   if (definition !== undefined) term.definition = definition.trim();
   if (conceptImage !== undefined) term.conceptImage = conceptImage || undefined;
@@ -38,6 +47,7 @@ export async function PUT(req: NextRequest, { params }: { params: Promise<Params
   if (status !== undefined) term.status = Math.min(6, Math.max(0, Number(status)));
 
   await term.save();
+  await deleteImages(toDelete);
   return NextResponse.json(term);
 }
 
@@ -52,8 +62,10 @@ export async function DELETE(req: NextRequest, { params }: { params: Promise<Par
   const term = await getOwnedTerm(termId, id, userId);
   if (!term) return NextResponse.json({ error: "Termo não encontrado." }, { status: 404 });
 
+  const imageUrls = [term.conceptImage, term.definitionImage];
   await term.deleteOne();
   await StudyList.findByIdAndUpdate(term.studyListId, { $inc: { termsCount: -1 } });
+  await deleteImages(imageUrls);
 
   return NextResponse.json({ success: true });
 }

@@ -5,6 +5,7 @@ import { connectDB } from "@/lib/mongodb";
 import StudyList from "@/models/StudyList";
 import Term from "@/models/Term";
 import mongoose from "mongoose";
+import { deleteImages } from "@/lib/cloudinary";
 
 async function getOwnedList(listId: string, userId: string) {
   if (!mongoose.isValidObjectId(listId)) return null;
@@ -61,8 +62,11 @@ export async function DELETE(req: NextRequest, { params }: { params: Promise<{ i
   const list = await getOwnedList(id, userId);
   if (!list) return NextResponse.json({ error: "Lista não encontrada." }, { status: 404 });
 
+  const terms = await Term.find({ studyListId: list._id }, { conceptImage: 1, definitionImage: 1 });
+  const imageUrls = terms.flatMap((t) => [t.conceptImage, t.definitionImage]);
   await Term.deleteMany({ studyListId: list._id });
   await list.deleteOne();
+  await deleteImages(imageUrls);
 
   return NextResponse.json({ success: true });
 }
