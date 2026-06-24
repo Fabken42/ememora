@@ -30,14 +30,14 @@ export default function Pagination({ page, pages, onPage }: Props) {
       <button
         onClick={() => onPage(page - 1)}
         disabled={page === 1}
-        className="p-2 rounded-lg text-slate-500 hover:bg-slate-100 disabled:opacity-40 disabled:cursor-not-allowed"
+        className="p-2 rounded-lg text-slate-500 dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-700 disabled:opacity-40 disabled:cursor-not-allowed"
       >
         <ChevronLeft size={16} />
       </button>
 
       {getPages().map((p, i) =>
         p === "..." ? (
-          <span key={`ellipsis-${i}`} className="px-2 text-slate-400">…</span>
+          <span key={`ellipsis-${i}`} className="px-2 text-slate-400 dark:text-slate-500">…</span>
         ) : (
           <button
             key={p}
@@ -45,7 +45,7 @@ export default function Pagination({ page, pages, onPage }: Props) {
             className={`min-w-[36px] h-9 px-2 rounded-lg text-sm font-medium transition-colors ${
               p === page
                 ? "bg-indigo-600 text-white"
-                : "text-slate-600 hover:bg-slate-100"
+                : "text-slate-600 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-700"
             }`}
           >
             {p}
@@ -56,7 +56,7 @@ export default function Pagination({ page, pages, onPage }: Props) {
       <button
         onClick={() => onPage(page + 1)}
         disabled={page === pages}
-        className="p-2 rounded-lg text-slate-500 hover:bg-slate-100 disabled:opacity-40 disabled:cursor-not-allowed"
+        className="p-2 rounded-lg text-slate-500 dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-700 disabled:opacity-40 disabled:cursor-not-allowed"
       >
         <ChevronRight size={16} />
       </button>

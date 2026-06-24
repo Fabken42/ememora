@@ -44,46 +44,46 @@ export default function CreateListModal({ onClose }: Props) {
 
   return (
     <div className="fixed inset-0 bg-black/50 z-50 flex items-center justify-center p-4">
-      <div className="bg-white rounded-2xl w-full max-w-md shadow-2xl">
-        <div className="flex items-center justify-between p-6 border-b border-slate-100">
-          <h2 className="text-lg font-semibold text-slate-800">Nova lista</h2>
-          <button onClick={onClose} className="text-slate-400 hover:text-slate-600">
+      <div className="bg-white dark:bg-slate-800 rounded-2xl w-full max-w-md shadow-2xl">
+        <div className="flex items-center justify-between p-6 border-b border-slate-100 dark:border-slate-700">
+          <h2 className="text-lg font-semibold text-slate-800 dark:text-slate-100">Nova lista</h2>
+          <button onClick={onClose} className="text-slate-400 dark:text-slate-500 hover:text-slate-600 dark:hover:text-slate-300">
             <X size={20} />
           </button>
         </div>
 
         <form onSubmit={handleSubmit} className="p-6 space-y-4">
           <div>
-            <label className="text-sm font-medium text-slate-700">Nome *</label>
+            <label className="text-sm font-medium text-slate-700 dark:text-slate-200">Nome *</label>
             <input
               value={name}
               onChange={(e) => setName(e.target.value)}
               maxLength={120}
               placeholder="Ex: Vocabulário de Inglês"
-              className="mt-1 w-full rounded-lg border border-slate-300 px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500"
+              className="mt-1 w-full rounded-lg border border-slate-300 dark:border-slate-600 bg-white dark:bg-slate-700 text-slate-800 dark:text-slate-100 placeholder-slate-400 dark:placeholder-slate-500 px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500"
               required
               autoFocus
             />
           </div>
 
           <div>
-            <label className="text-sm font-medium text-slate-700">Descrição</label>
+            <label className="text-sm font-medium text-slate-700 dark:text-slate-200">Descrição</label>
             <textarea
               value={description}
               onChange={(e) => setDescription(e.target.value)}
               maxLength={500}
               rows={2}
               placeholder="Descrição opcional..."
-              className="mt-1 w-full rounded-lg border border-slate-300 px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 resize-none"
+              className="mt-1 w-full rounded-lg border border-slate-300 dark:border-slate-600 bg-white dark:bg-slate-700 text-slate-800 dark:text-slate-100 placeholder-slate-400 dark:placeholder-slate-500 px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 resize-none"
             />
           </div>
 
           <div>
-            <label className="text-sm font-medium text-slate-700">Gênero</label>
+            <label className="text-sm font-medium text-slate-700 dark:text-slate-200">Gênero</label>
             <select
               value={genre}
               onChange={(e) => setGenre(e.target.value)}
-              className="mt-1 w-full rounded-lg border border-slate-300 px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 bg-white"
+              className="mt-1 w-full rounded-lg border border-slate-300 dark:border-slate-600 bg-white dark:bg-slate-700 text-slate-800 dark:text-slate-100 px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500"
             >
               <option value="">Sem gênero</option>
               {GENRES.map((g) => (
@@ -96,7 +96,7 @@ export default function CreateListModal({ onClose }: Props) {
             <button
               type="button"
               onClick={onClose}
-              className="px-4 py-2 text-sm rounded-lg border border-slate-300 text-slate-600 hover:bg-slate-50"
+              className="px-4 py-2 text-sm rounded-lg border border-slate-300 dark:border-slate-600 text-slate-600 dark:text-slate-300 hover:bg-slate-50 dark:hover:bg-slate-700"
             >
               Cancelar
             </button>

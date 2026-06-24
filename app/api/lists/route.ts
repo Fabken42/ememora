@@ -22,7 +22,20 @@ export async function GET(req: NextRequest) {
 
   const sortOrder = sort === "oldest" ? 1 : -1;
 
-  const lists = await StudyList.find(query).sort({ createdAt: sortOrder }).lean();
+  const lists = await StudyList.aggregate([
+    { $match: query },
+    { $sort: { createdAt: sortOrder } },
+    {
+      $lookup: {
+        from: "terms",
+        localField: "_id",
+        foreignField: "studyListId",
+        as: "_terms",
+      },
+    },
+    { $addFields: { statusSum: { $sum: "$_terms.status" } } },
+    { $project: { _terms: 0 } },
+  ]);
   return NextResponse.json(lists);
 }
 

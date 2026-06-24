@@ -4,7 +4,7 @@ import { create } from "zustand";
 import type { Genre } from "@/models/StudyList.types";
 
 type SortOrder = "newest" | "oldest";
-type TermSort = "default" | "oldest" | "status_asc" | "status_desc";
+type TermSort = "default" | "reverse" | "status_asc" | "status_desc";
 
 interface FilterState {
   dashboardSort: SortOrder;

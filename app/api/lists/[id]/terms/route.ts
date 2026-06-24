@@ -31,10 +31,10 @@ export async function GET(req: NextRequest, { params }: { params: Promise<{ id: 
   const sort = searchParams.get("sort") ?? "default";
   const all = searchParams.get("all") === "true";
 
-  let sortQuery: Record<string, 1 | -1> = { createdAt: 1 };
-  if (sort === "oldest") sortQuery = { createdAt: 1 };
-  else if (sort === "status_desc") sortQuery = { status: -1, createdAt: 1 };
-  else if (sort === "status_asc") sortQuery = { status: 1, createdAt: 1 };
+  let sortQuery: Record<string, 1 | -1> = { createdAt: -1 };
+  if (sort === "reverse") sortQuery = { createdAt: 1 };
+  else if (sort === "status_desc") sortQuery = { status: -1, createdAt: -1 };
+  else if (sort === "status_asc") sortQuery = { status: 1, createdAt: -1 };
 
   const query = { studyListId: list._id, userId: new mongoose.Types.ObjectId(userId) };
 
@@ -43,7 +43,15 @@ export async function GET(req: NextRequest, { params }: { params: Promise<{ id: 
     return NextResponse.json({ terms, total: terms.length, page: 1, pages: 1 });
   }
 
-  const total = await Term.countDocuments(query);
+  const [statusAgg, total] = await Promise.all([
+    Term.aggregate([
+      { $match: { studyListId: list._id, userId: new mongoose.Types.ObjectId(userId) } },
+      { $group: { _id: null, sum: { $sum: "$status" } } },
+    ]),
+    Term.countDocuments(query),
+  ]);
+  const statusSum: number = statusAgg[0]?.sum ?? 0;
+
   const pages = Math.ceil(total / TERMS_PER_PAGE);
   const terms = await Term.find(query)
     .sort(sortQuery)
@@ -51,7 +59,7 @@ export async function GET(req: NextRequest, { params }: { params: Promise<{ id: 
     .limit(TERMS_PER_PAGE)
     .lean();
 
-  return NextResponse.json({ terms, total, page, pages });
+  return NextResponse.json({ terms, total, page, pages, statusSum });
 }
 
 export async function POST(req: NextRequest, { params }: { params: Promise<{ id: string }> }) {
@@ -92,4 +100,23 @@ export async function POST(req: NextRequest, { params }: { params: Promise<{ id:
   await StudyList.findByIdAndUpdate(list._id, { $inc: { termsCount: 1 } });
 
   return NextResponse.json(term, { status: 201 });
+}
+
+export async function PATCH(req: NextRequest, { params }: { params: Promise<{ id: string }> }) {
+  const session = await getServerSession(authOptions);
+  if (!session?.user) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+
+  await connectDB();
+  const { id } = await params;
+  const userId = (session.user as { id: string }).id;
+
+  const list = await getOwnedList(id, userId);
+  if (!list) return NextResponse.json({ error: "Lista não encontrada." }, { status: 404 });
+
+  await Term.updateMany(
+    { studyListId: list._id, userId: new mongoose.Types.ObjectId(userId), status: { $gt: 0 } },
+    { $inc: { status: -1 } }
+  );
+
+  return NextResponse.json({ success: true });
 }

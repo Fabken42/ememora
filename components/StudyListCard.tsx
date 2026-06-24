@@ -33,15 +33,15 @@ export default function StudyListCard({ list, onDeleted }: Props) {
   return (
     <Link
       href={`/lists/${list._id}`}
-      className="group relative bg-white rounded-xl border border-slate-200 p-5 hover:border-indigo-300 hover:shadow-md transition-all flex flex-col gap-3"
+      className="group relative bg-white dark:bg-slate-800 rounded-xl border border-slate-200 dark:border-slate-700 p-5 hover:border-indigo-300 dark:hover:border-indigo-500 hover:shadow-md transition-all flex flex-col gap-3"
     >
       <div className="flex items-start justify-between gap-2">
-        <h3 className="font-semibold text-slate-800 text-lg leading-tight line-clamp-2 group-hover:text-indigo-600 transition-colors">
+        <h3 className="font-semibold text-slate-800 dark:text-slate-100 text-lg leading-tight line-clamp-2 group-hover:text-indigo-600 dark:group-hover:text-indigo-400 transition-colors">
           {list.name}
         </h3>
         <button
           onClick={handleDelete}
-          className="shrink-0 text-slate-300 hover:text-red-500 transition-colors p-1 -mr-1 -mt-1"
+          className="shrink-0 text-slate-300 dark:text-slate-600 hover:text-red-500 dark:hover:text-red-400 transition-colors p-1 -mr-1 -mt-1"
           title="Excluir lista"
         >
           <Trash2 size={16} />
@@ -49,8 +49,23 @@ export default function StudyListCard({ list, onDeleted }: Props) {
       </div>
 
       {list.description && (
-        <p className="text-sm text-slate-500 line-clamp-2">{list.description}</p>
+        <p className="text-sm text-slate-500 dark:text-slate-400 line-clamp-2">{list.description}</p>
       )}
+
+      {list.termsCount > 0 && list.statusSum !== undefined && (() => {
+        const pct = Math.round((list.statusSum / (list.termsCount * 6)) * 100);
+        return (
+          <div className="space-y-1">
+            <div className="h-1.5 bg-slate-100 dark:bg-slate-700 rounded-full overflow-hidden">
+              <div
+                className="h-full bg-indigo-500 rounded-full"
+                style={{ width: `${pct}%` }}
+              />
+            </div>
+            <p className="text-xs text-slate-400 dark:text-slate-500 text-right">{pct}%</p>
+          </div>
+        );
+      })()}
 
       <div className="flex items-center justify-between mt-auto pt-1">
         {list.genre ? (
@@ -61,7 +76,7 @@ export default function StudyListCard({ list, onDeleted }: Props) {
           <span />
         )}
 
-        <div className="flex items-center gap-1 text-xs text-slate-400">
+        <div className="flex items-center gap-1 text-xs text-slate-400 dark:text-slate-500">
           <BookOpen size={13} />
           <span>{list.termsCount} {list.termsCount === 1 ? "termo" : "termos"}</span>
         </div>

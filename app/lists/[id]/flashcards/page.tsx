@@ -7,6 +7,8 @@ import GameConfigModal from "@/components/GameConfigModal";
 import FlashcardGame from "@/components/FlashcardGame";
 import type { ITerm } from "@/models/Term";
 
+// app\lists\[id]\flashcards\page.tsx
+
 export default function FlashcardsPage() {
   const { id } = useParams<{ id: string }>();
   const router = useRouter();
@@ -16,6 +18,11 @@ export default function FlashcardsPage() {
   function handleStart(terms: ITerm[]) {
     setGameTerms(terms);
     setShowConfig(false);
+  }
+
+  function handleExit() {
+    setGameTerms(null);
+    setShowConfig(true);
   }
 
   return (
@@ -45,7 +52,7 @@ export default function FlashcardsPage() {
         <FlashcardGame
           listId={id}
           initialTerms={gameTerms}
-          onExit={() => router.push(`/lists/${id}`)}
+          onExit={handleExit}
         />
       )}
     </div>

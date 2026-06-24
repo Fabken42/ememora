@@ -27,6 +27,11 @@ export default function QuizPage() {
     setShowConfig(false);
   }
 
+  function handleExit() {
+    setGameTerms(null);
+    setShowConfig(true);
+  }
+
   return (
     <div className="max-w-lg mx-auto min-h-screen">
       <div className="sticky top-0 bg-white border-b border-slate-100 z-10">
@@ -55,7 +60,7 @@ export default function QuizPage() {
           listId={id}
           initialTerms={gameTerms}
           allTerms={allTerms}
-          onExit={() => router.push(`/lists/${id}`)}
+          onExit={handleExit}
         />
       )}
     </div>

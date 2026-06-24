@@ -3,7 +3,8 @@
 import { useState, useEffect, useRef } from "react";
 import Image from "next/image";
 import { useSwipeable } from "react-swipeable";
-import { ArrowLeft, ArrowRight, ArrowDown, Clock, RotateCcw } from "lucide-react";
+import { ArrowLeft, ArrowRight, ArrowDown, Clock, RotateCcw, Trophy, BookOpen } from "lucide-react";
+import { useRouter } from "next/navigation";
 import { useGameStore } from "@/store/useGameStore";
 import StatusIcon from "@/components/StatusIcon";
 import type { ITerm } from "@/models/Term";
@@ -19,44 +20,54 @@ interface SummaryProps {
   results: { termId: string; correct: boolean | null }[];
   elapsed: number;
   onReset: () => void;
+  onBackToList: () => void;
 }
 
-function Summary({ results, elapsed, onReset }: SummaryProps) {
+function Summary({ results, elapsed, onReset, onBackToList }: SummaryProps) {
   const correct = results.filter((r) => r.correct === true).length;
   const incorrect = results.filter((r) => r.correct === false).length;
   const skipped = results.filter((r) => r.correct === null).length;
 
   return (
     <div className="flex flex-col items-center gap-6 py-12 px-4 text-center">
-      <div className="text-5xl">🎉</div>
-      <h2 className="text-2xl font-bold text-slate-800">Sessão concluída!</h2>
+      <Trophy size={48} className="text-indigo-500" />
+      <h2 className="text-2xl font-bold text-slate-800 dark:text-slate-100">Fim de Jogo!</h2>
 
       <div className="grid grid-cols-3 gap-4 w-full max-w-xs">
-        <div className="bg-green-50 rounded-xl p-4">
+        <div className="bg-green-50 dark:bg-green-900/30 rounded-xl p-4">
           <p className="text-2xl font-bold text-green-600">{correct}</p>
-          <p className="text-xs text-green-700 mt-1">Acertos</p>
+          <p className="text-xs text-green-700 dark:text-green-400 mt-1">Acertos</p>
         </div>
-        <div className="bg-red-50 rounded-xl p-4">
+        <div className="bg-red-50 dark:bg-red-900/30 rounded-xl p-4">
           <p className="text-2xl font-bold text-red-500">{incorrect}</p>
-          <p className="text-xs text-red-700 mt-1">Erros</p>
+          <p className="text-xs text-red-700 dark:text-red-400 mt-1">Erros</p>
         </div>
-        <div className="bg-slate-50 rounded-xl p-4">
-          <p className="text-2xl font-bold text-slate-500">{skipped}</p>
-          <p className="text-xs text-slate-600 mt-1">Pulados</p>
+        <div className="bg-slate-50 dark:bg-slate-700 rounded-xl p-4">
+          <p className="text-2xl font-bold text-slate-500 dark:text-slate-300">{skipped}</p>
+          <p className="text-xs text-slate-600 dark:text-slate-400 mt-1">Pulados</p>
         </div>
       </div>
 
-      <p className="text-sm text-slate-500 flex items-center gap-1">
+      <p className="text-sm text-slate-500 dark:text-slate-400 flex items-center gap-1">
         <Clock size={14} /> Tempo total: {formatTime(elapsed)}
       </p>
 
-      <button
-        onClick={onReset}
-        className="flex items-center gap-2 px-6 py-3 bg-indigo-600 text-white rounded-xl hover:bg-indigo-700 transition-colors"
-      >
-        <RotateCcw size={16} />
-        Nova sessão
-      </button>
+      <div className="flex gap-3">
+        <button
+          onClick={onBackToList}
+          className="flex items-center gap-2 px-5 py-3 bg-slate-100 dark:bg-slate-700 text-slate-700 dark:text-slate-200 rounded-xl hover:bg-slate-200 dark:hover:bg-slate-600 transition-colors"
+        >
+          <BookOpen size={16} />
+          Voltar para lista
+        </button>
+        <button
+          onClick={onReset}
+          className="flex items-center gap-2 px-5 py-3 bg-indigo-600 text-white rounded-xl hover:bg-indigo-700 transition-colors"
+        >
+          <RotateCcw size={16} />
+          Novo jogo
+        </button>
+      </div>
     </div>
   );
 }
@@ -73,6 +84,8 @@ export default function FlashcardGame({ listId, initialTerms, onExit }: Props) {
   const [elapsed, setElapsed] = useState(0);
   const [animDir, setAnimDir] = useState<"left" | "right" | "down" | null>(null);
   const timeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+  const router = useRouter();
+  const isDone = currentIndex >= terms.length && terms.length > 0;
 
   useEffect(() => {
     setTerms(initialTerms);
@@ -85,10 +98,10 @@ export default function FlashcardGame({ listId, initialTerms, onExit }: Props) {
   }, []);
 
   useEffect(() => {
-    if (!config.showTimer || !startTime) return;
+    if (!config.showTimer || !startTime || isDone) return;
     const id = setInterval(() => setElapsed(Date.now() - startTime), 1000);
     return () => clearInterval(id);
-  }, [config.showTimer, startTime]);
+  }, [config.showTimer, startTime, isDone]);
 
   function updateStatus(term: ITerm, delta: number) {
     const newStatus = Math.min(6, Math.max(0, term.status + delta));
@@ -121,8 +134,6 @@ export default function FlashcardGame({ listId, initialTerms, onExit }: Props) {
     }, 250);
   }
 
-  const isDone = currentIndex >= terms.length && terms.length > 0;
-
   useEffect(() => {
     function onKey(e: KeyboardEvent) {
       if (isDone || animDir) return;
@@ -144,12 +155,18 @@ export default function FlashcardGame({ listId, initialTerms, onExit }: Props) {
   });
 
   if (isDone) {
-    const totalElapsed = startTime ? Date.now() - startTime : elapsed;
     return (
       <Summary
         results={results}
-        elapsed={totalElapsed}
-        onReset={() => { reset(); onExit(); }}
+        elapsed={elapsed}
+        onReset={() => {
+          reset();
+          onExit();
+        }}
+        onBackToList={() => {
+          reset();
+          router.push(`/lists/${listId}`);
+        }}
       />
     );
   }
@@ -165,21 +182,20 @@ export default function FlashcardGame({ listId, initialTerms, onExit }: Props) {
   const term = terms[currentIndex];
 
   return (
-    <div className="flex flex-col items-center gap-6 py-6 px-4 select-none">
+    <div {...handlers} className="flex flex-col items-center gap-6 py-6 px-4 select-none">
       {config.showTimer && (
-        <div className="flex items-center gap-1.5 text-sm text-slate-500 bg-slate-100 px-3 py-1.5 rounded-full">
+        <div className="flex items-center gap-1.5 text-sm text-slate-500 dark:text-slate-400 bg-slate-100 dark:bg-slate-700 px-3 py-1.5 rounded-full">
           <Clock size={14} />
           {formatTime(elapsed)}
         </div>
       )}
 
-      <div className="text-sm text-slate-500">
+      <div className="text-sm text-slate-500 dark:text-slate-400">
         {currentIndex + 1} / {terms.length}
       </div>
 
       <div className="w-full max-w-md cursor-pointer overflow-hidden" onClick={() => setFlipped((f) => !f)}>
         <div
-          className="relative transition-transform duration-300 ease-out"
           style={{
             transform: animDir === "right"
               ? "translateX(120%)"
@@ -193,29 +209,32 @@ export default function FlashcardGame({ listId, initialTerms, onExit }: Props) {
           }}
         >
           <div
-            className={`relative w-full min-h-64 bg-white border-2 rounded-2xl shadow-lg p-6 flex flex-col items-center justify-center gap-3 ${flipped ? "border-indigo-300 bg-indigo-50" : "border-slate-200"
-              }`}
+            className={`relative w-full min-h-64 border-2 rounded-2xl shadow-lg p-6 flex flex-col items-center justify-center gap-3 ${
+              flipped
+                ? "border-indigo-300 dark:border-indigo-600 bg-indigo-50 dark:bg-indigo-900/30"
+                : "bg-white dark:bg-slate-800 border-slate-200 dark:border-slate-700"
+            }`}
           >
             <div className="absolute top-3 right-3">
               <StatusIcon status={term.status} size={20} />
             </div>
-            <p className="text-xs font-semibold text-slate-400 uppercase tracking-wide">
+            <p className="text-xs font-semibold text-slate-400 dark:text-slate-500 uppercase tracking-wide">
               {flipped ? "Definição" : "Conceito"}
             </p>
-            <p className="text-lg text-slate-800 text-center font-medium">
+            <p className="text-lg text-slate-800 dark:text-slate-100 text-center font-medium">
               {flipped ? term.definition : term.concept}
             </p>
             {!flipped && term.conceptImage && (
-              <div className="relative w-full h-40 rounded-xl overflow-hidden border border-slate-100">
-                <Image src={term.conceptImage} alt="" fill className="object-contain bg-slate-50" />
+              <div className="relative w-full h-40 rounded-xl overflow-hidden border border-slate-100 dark:border-slate-700">
+                <Image src={term.conceptImage} alt="" fill className="object-contain bg-slate-50 dark:bg-slate-700" />
               </div>
             )}
             {flipped && term.definitionImage && (
-              <div className="relative w-full h-40 rounded-xl overflow-hidden border border-slate-100">
-                <Image src={term.definitionImage} alt="" fill className="object-contain bg-indigo-50" />
+              <div className="relative w-full h-40 rounded-xl overflow-hidden border border-slate-100 dark:border-slate-700">
+                <Image src={term.definitionImage} alt="" fill className="object-contain bg-indigo-50 dark:bg-indigo-900/30" />
               </div>
             )}
-            <p className="text-xs text-slate-300 mt-2">Toque para virar</p>
+            <p className="text-xs text-slate-300 dark:text-slate-600 mt-2">Toque para virar</p>
           </div>
         </div>
       </div>
@@ -223,7 +242,7 @@ export default function FlashcardGame({ listId, initialTerms, onExit }: Props) {
       <div className="flex items-center gap-4">
         <button
           onClick={() => advance("left")}
-          className="flex flex-col items-center gap-1 p-4 bg-red-50 text-red-500 rounded-2xl hover:bg-red-100 transition-colors active:scale-95"
+          className="flex flex-col items-center gap-1 p-4 bg-red-50 dark:bg-red-900/30 text-red-500 rounded-2xl hover:bg-red-100 dark:hover:bg-red-900/50 transition-colors active:scale-95"
           title="Errei (status -1)"
         >
           <ArrowLeft size={22} />
@@ -231,7 +250,7 @@ export default function FlashcardGame({ listId, initialTerms, onExit }: Props) {
         </button>
         <button
           onClick={() => advance("down")}
-          className="flex flex-col items-center gap-1 p-3 bg-slate-50 text-slate-500 rounded-2xl hover:bg-slate-100 transition-colors active:scale-95"
+          className="flex flex-col items-center gap-1 p-3 bg-slate-50 dark:bg-slate-700 text-slate-500 dark:text-slate-400 rounded-2xl hover:bg-slate-100 dark:hover:bg-slate-600 transition-colors active:scale-95"
           title="Pular"
         >
           <ArrowDown size={18} />
@@ -239,7 +258,7 @@ export default function FlashcardGame({ listId, initialTerms, onExit }: Props) {
         </button>
         <button
           onClick={() => advance("right")}
-          className="flex flex-col items-center gap-1 p-4 bg-green-50 text-green-600 rounded-2xl hover:bg-green-100 transition-colors active:scale-95"
+          className="flex flex-col items-center gap-1 p-4 bg-green-50 dark:bg-green-900/30 text-green-600 dark:text-green-400 rounded-2xl hover:bg-green-100 dark:hover:bg-green-900/50 transition-colors active:scale-95"
           title="Acertei (status +1)"
         >
           <ArrowRight size={22} />
@@ -247,7 +266,7 @@ export default function FlashcardGame({ listId, initialTerms, onExit }: Props) {
         </button>
       </div>
 
-      <p className="text-xs text-slate-400 text-center">
+      <p className="text-xs text-slate-400 dark:text-slate-500 text-center">
         ← Errei &nbsp;|&nbsp; Pular ↓ &nbsp;|&nbsp; Acertei →
       </p>
     </div>

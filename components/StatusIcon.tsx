@@ -27,7 +27,7 @@ export default function StatusIcon({ status, size = 22 }: Props) {
       size={size}
       className={className}
       aria-label={label}
-      strokeWidth={2.2}
+      strokeWidth={2}
     />
   );
 }

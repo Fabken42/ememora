@@ -4,6 +4,7 @@ import { redirect, notFound } from "next/navigation";
 import ListClient from "./ListClient";
 import { connectDB } from "@/lib/mongodb";
 import StudyList from "@/models/StudyList";
+import Term from "@/models/Term";
 import mongoose from "mongoose";
 
 export default async function ListPage({ params }: { params: Promise<{ id: string }> }) {
@@ -24,5 +25,11 @@ export default async function ListPage({ params }: { params: Promise<{ id: strin
 
   if (!list) notFound();
 
-  return <ListClient list={JSON.parse(JSON.stringify(list))} />;
+  const statusAgg = await Term.aggregate([
+    { $match: { studyListId: list._id } },
+    { $group: { _id: null, sum: { $sum: "$status" } } },
+  ]);
+  const statusSum: number = statusAgg[0]?.sum ?? 0;
+
+  return <ListClient list={JSON.parse(JSON.stringify({ ...list, statusSum }))} />;
 }

@@ -48,8 +48,8 @@ export default function DashboardClient() {
     <div className="max-w-6xl mx-auto px-4 py-8 space-y-6">
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
         <div>
-          <h1 className="text-2xl font-bold text-slate-800">Minhas listas</h1>
-          <p className="text-sm text-slate-500 mt-1">
+          <h1 className="text-2xl font-bold text-slate-800 dark:text-slate-100">Minhas listas</h1>
+          <p className="text-sm text-slate-500 dark:text-slate-400 mt-1">
             {lists.length} {lists.length === 1 ? "lista" : "listas"}
             {lists.length > 0 && ` • máx. ${MAX_LISTS}`}
           </p>
@@ -60,8 +60,8 @@ export default function DashboardClient() {
             onClick={() => setShowFilters((v) => !v)}
             className={`flex items-center gap-2 px-3 py-2 rounded-xl text-sm border transition-colors ${
               showFilters || dashboardGenres.length > 0
-                ? "bg-indigo-50 border-indigo-300 text-indigo-700"
-                : "border-slate-300 text-slate-600 hover:bg-slate-50"
+                ? "bg-indigo-50 dark:bg-indigo-900/40 border-indigo-300 dark:border-indigo-600 text-indigo-700 dark:text-indigo-300"
+                : "border-slate-300 dark:border-slate-600 text-slate-600 dark:text-slate-300 hover:bg-slate-50 dark:hover:bg-slate-800"
             }`}
           >
             <SlidersHorizontal size={15} />
@@ -83,20 +83,20 @@ export default function DashboardClient() {
       </div>
 
       {showFilters && (
-        <div className="bg-white border border-slate-200 rounded-2xl p-4 space-y-3">
+        <div className="bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-2xl p-4 space-y-3">
           <div className="flex items-center justify-between">
-            <p className="text-sm font-medium text-slate-700">Ordenação</p>
+            <p className="text-sm font-medium text-slate-700 dark:text-slate-200">Ordenação</p>
             <select
               value={dashboardSort}
               onChange={(e) => setDashboardSort(e.target.value as "newest" | "oldest")}
-              className="text-sm border border-slate-300 rounded-lg px-2 py-1.5 bg-white focus:outline-none focus:ring-1 focus:ring-indigo-500"
+              className="text-sm border border-slate-300 dark:border-slate-600 bg-white dark:bg-slate-700 text-slate-800 dark:text-slate-100 rounded-lg px-2 py-1.5 focus:outline-none focus:ring-1 focus:ring-indigo-500"
             >
               <option value="newest">Mais recentes</option>
               <option value="oldest">Mais antigas</option>
             </select>
           </div>
           <div>
-            <p className="text-sm font-medium text-slate-700 mb-2">Gênero</p>
+            <p className="text-sm font-medium text-slate-700 dark:text-slate-200 mb-2">Gênero</p>
             <div className="flex flex-wrap gap-2">
               {GENRES.map((g) => (
                 <button
@@ -105,7 +105,7 @@ export default function DashboardClient() {
                   className={`text-xs px-3 py-1.5 rounded-full border transition-colors ${
                     dashboardGenres.includes(g)
                       ? "bg-indigo-600 border-indigo-600 text-white"
-                      : "border-slate-300 text-slate-600 hover:border-indigo-400"
+                      : "border-slate-300 dark:border-slate-600 text-slate-600 dark:text-slate-300 hover:border-indigo-400 dark:hover:border-indigo-500"
                   }`}
                 >
                   {GENRE_LABELS[g]}
@@ -116,7 +116,7 @@ export default function DashboardClient() {
           {dashboardGenres.length > 0 && (
             <button
               onClick={() => setDashboardGenres([])}
-              className="text-xs text-indigo-600 hover:underline"
+              className="text-xs text-indigo-600 dark:text-indigo-400 hover:underline"
             >
               Limpar filtros
             </button>
@@ -129,9 +129,9 @@ export default function DashboardClient() {
           <div className="w-7 h-7 border-2 border-indigo-500 border-t-transparent rounded-full animate-spin" />
         </div>
       ) : lists.length === 0 ? (
-        <div className="text-center py-20 text-slate-400 space-y-3">
+        <div className="text-center py-20 text-slate-400 dark:text-slate-500 space-y-3">
           <p className="text-4xl">📚</p>
-          <p className="font-medium text-slate-600">Nenhuma lista encontrada.</p>
+          <p className="font-medium text-slate-600 dark:text-slate-400">Nenhuma lista encontrada.</p>
           <p className="text-sm">
             {dashboardGenres.length > 0
               ? "Tente remover os filtros ou crie uma nova lista."

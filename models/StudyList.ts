@@ -8,6 +8,7 @@ export interface IStudyList extends Document {
   description?: string;
   genre?: Genre;
   termsCount: number;
+  statusSum?: number;
   createdAt: Date;
   updatedAt: Date;
 }

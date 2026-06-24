@@ -11,9 +11,11 @@ interface Props {
   term?: ITerm & { _id: string };
   onSaved: () => void;
   onCancel: () => void;
+  autoFocus?: boolean;
+  showCancel?: boolean;
 }
 
-export default function TermForm({ listId, term, onSaved, onCancel }: Props) {
+export default function TermForm({ listId, term, onSaved, onCancel, autoFocus, showCancel = true }: Props) {
   const [concept, setConcept] = useState(term?.concept ?? "");
   const [definition, setDefinition] = useState(term?.definition ?? "");
   const [conceptImage, setConceptImage] = useState<string | undefined>(term?.conceptImage);
@@ -52,19 +54,22 @@ export default function TermForm({ listId, term, onSaved, onCancel }: Props) {
     }
   }
 
+  const inputCls = "mt-1 w-full rounded-lg border border-slate-300 dark:border-slate-600 bg-white dark:bg-slate-700 text-slate-800 dark:text-slate-100 placeholder-slate-400 dark:placeholder-slate-500 px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 resize-none";
+
   return (
     <form onSubmit={handleSubmit} className="space-y-4">
       <div className="grid md:grid-cols-2 gap-4">
         <div className="space-y-3">
           <div>
-            <label className="text-sm font-medium text-slate-700">Conceito *</label>
+            <label className="text-sm font-medium text-slate-700 dark:text-slate-200">Conceito *</label>
             <textarea
               value={concept}
               onChange={(e) => setConcept(e.target.value)}
               rows={3}
               maxLength={500}
               placeholder="Digite o conceito..."
-              className="mt-1 w-full rounded-lg border border-slate-300 px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 resize-none"
+              autoFocus={autoFocus}
+              className={inputCls}
               required
             />
           </div>
@@ -73,14 +78,14 @@ export default function TermForm({ listId, term, onSaved, onCancel }: Props) {
 
         <div className="space-y-3">
           <div>
-            <label className="text-sm font-medium text-slate-700">Definição *</label>
+            <label className="text-sm font-medium text-slate-700 dark:text-slate-200">Definição *</label>
             <textarea
               value={definition}
               onChange={(e) => setDefinition(e.target.value)}
               rows={3}
               maxLength={1000}
               placeholder="Digite a definição..."
-              className="mt-1 w-full rounded-lg border border-slate-300 px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 resize-none"
+              className={inputCls}
               required
             />
           </div>
@@ -89,13 +94,15 @@ export default function TermForm({ listId, term, onSaved, onCancel }: Props) {
       </div>
 
       <div className="flex justify-end gap-2 pt-2">
-        <button
-          type="button"
-          onClick={onCancel}
-          className="px-4 py-2 text-sm rounded-lg border border-slate-300 text-slate-600 hover:bg-slate-50 transition-colors"
-        >
-          Cancelar
-        </button>
+        {showCancel && (
+          <button
+            type="button"
+            onClick={onCancel}
+            className="px-4 py-2 text-sm rounded-lg border border-slate-300 dark:border-slate-600 text-slate-600 dark:text-slate-300 hover:bg-slate-50 dark:hover:bg-slate-700 transition-colors"
+          >
+            Cancelar
+          </button>
+        )}
         <button
           type="submit"
           disabled={loading}
