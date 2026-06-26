@@ -77,7 +77,7 @@ export default function TermItem({ term, listId, onChanged, onStatusChanged }: P
       <div className="flex-1 grid sm:grid-cols-2 gap-3 min-w-0">
         <div className="space-y-1.5">
           <p className="text-xs font-semibold text-slate-400 dark:text-slate-500 uppercase tracking-wide">Conceito</p>
-          <p className="text-sm text-slate-800 dark:text-slate-100 break-words">{term.concept}</p>
+          <div className="text-sm text-slate-800 dark:text-slate-100 break-words rich-content" dangerouslySetInnerHTML={{ __html: term.concept }} />
           {term.conceptImage && (
             <div className="relative h-24 w-full rounded-lg overflow-hidden border border-slate-100 dark:border-[#2e2e2e]">
               <Image src={term.conceptImage} alt="conceito" fill className="object-contain bg-gray-50 dark:bg-[#252525]" />
@@ -86,7 +86,7 @@ export default function TermItem({ term, listId, onChanged, onStatusChanged }: P
         </div>
         <div className="space-y-1.5">
           <p className="text-xs font-semibold text-slate-400 dark:text-slate-500 uppercase tracking-wide">Definição</p>
-          <p className="text-sm text-slate-800 dark:text-slate-100 break-words">{term.definition}</p>
+          <div className="text-sm text-slate-800 dark:text-slate-100 break-words rich-content" dangerouslySetInnerHTML={{ __html: term.definition }} />
           {term.definitionImage && (
             <div className="relative h-24 w-full rounded-lg overflow-hidden border border-slate-100 dark:border-[#2e2e2e]">
               <Image src={term.definitionImage} alt="definição" fill className="object-contain bg-gray-50 dark:bg-[#252525]" />

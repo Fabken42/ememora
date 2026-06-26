@@ -230,9 +230,10 @@ export default function FlashcardGame({ listId, initialTerms, onExit }: Props) {
                   <p className="text-xs font-semibold text-slate-400 dark:text-slate-500 uppercase tracking-wide">
                     {flipped ? backLabel : frontLabel}
                   </p>
-                  <p className="text-lg text-slate-800 dark:text-slate-100 text-center font-medium">
-                    {flipped ? backText : frontText}
-                  </p>
+                  <div
+                    className="text-lg text-slate-800 dark:text-slate-100 text-center font-medium rich-content"
+                    dangerouslySetInnerHTML={{ __html: flipped ? backText : frontText }}
+                  />
                   {!flipped && frontImage && (
                     <div className="relative w-full h-40 rounded-xl overflow-hidden border border-slate-100 dark:border-[#2e2e2e]">
                       <Image src={frontImage} alt="" fill className="object-contain bg-gray-50 dark:bg-[#252525]" />

@@ -4,6 +4,7 @@ import { useState } from "react";
 import toast from "react-hot-toast";
 import { Save } from "lucide-react";
 import ImageUpload from "./ImageUpload";
+import RichTextEditor from "./RichTextEditor";
 import type { ITerm } from "@/models/Term";
 
 interface Props {
@@ -54,23 +55,18 @@ export default function TermForm({ listId, term, onSaved, onCancel, autoFocus, s
     }
   }
 
-  const inputCls = "mt-1 w-full rounded-lg border border-slate-300 dark:border-[#383838] bg-white dark:bg-[#252525] text-slate-800 dark:text-slate-100 placeholder-slate-400 dark:placeholder-slate-500 px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 resize-none";
-
   return (
     <form onSubmit={handleSubmit} className="space-y-4">
       <div className="grid md:grid-cols-2 gap-4">
         <div className="space-y-3">
           <div>
             <label className="text-sm font-medium text-slate-700 dark:text-slate-200">Conceito *</label>
-            <textarea
+            <RichTextEditor
               value={concept}
-              onChange={(e) => setConcept(e.target.value)}
-              rows={3}
-              maxLength={500}
+              onChange={setConcept}
               placeholder="Digite o conceito..."
               autoFocus={autoFocus}
-              className={inputCls}
-              required
+              maxLength={500}
             />
           </div>
           <ImageUpload value={conceptImage} onChange={setConceptImage} label="Imagem do conceito" />
@@ -79,14 +75,11 @@ export default function TermForm({ listId, term, onSaved, onCancel, autoFocus, s
         <div className="space-y-3">
           <div>
             <label className="text-sm font-medium text-slate-700 dark:text-slate-200">Definição *</label>
-            <textarea
+            <RichTextEditor
               value={definition}
-              onChange={(e) => setDefinition(e.target.value)}
-              rows={3}
-              maxLength={1000}
+              onChange={setDefinition}
               placeholder="Digite a definição..."
-              className={inputCls}
-              required
+              maxLength={1000}
             />
           </div>
           <ImageUpload value={definitionImage} onChange={setDefinitionImage} label="Imagem da definição" />

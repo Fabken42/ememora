@@ -201,9 +201,10 @@ export default function QuizGame({ listId, initialTerms, allTerms, onExit }: Pro
         <p className="text-xs font-semibold text-slate-400 dark:text-slate-500 uppercase tracking-wide">
           {config.swapSides ? "Definição" : "Conceito"}
         </p>
-        <p className="text-lg font-medium text-slate-800 dark:text-slate-100">
-          {config.swapSides ? term.definition : term.concept}
-        </p>
+        <div
+          className="text-lg font-medium text-slate-800 dark:text-slate-100 rich-content"
+          dangerouslySetInnerHTML={{ __html: config.swapSides ? term.definition : term.concept }}
+        />
         {(config.swapSides ? term.definitionImage : term.conceptImage) && (
           <div className="relative h-40 w-full rounded-xl overflow-hidden border border-slate-100 dark:border-[#2e2e2e]">
             <Image
@@ -241,7 +242,7 @@ export default function QuizGame({ listId, initialTerms, allTerms, onExit }: Pro
                   <Image src={opt.image} alt="" fill className="object-contain" />
                 </div>
               )}
-              <p className="text-sm font-medium">{opt.text}</p>
+              <div className="text-sm font-medium rich-content" dangerouslySetInnerHTML={{ __html: opt.text }} />
               {selected !== null && opt.correct && (
                 <CheckCircle2 className="absolute top-3 right-3 text-green-500" size={16} />
               )}
