@@ -15,9 +15,9 @@ export default function Navbar() {
   useEffect(() => setMounted(true), []);
 
   return (
-    <nav className="bg-white dark:bg-slate-900 border-b border-slate-200 dark:border-slate-700 sticky top-0 z-40">
+    <nav className="bg-white dark:bg-[#121212] border-b border-slate-200 dark:border-[#2e2e2e] sticky top-0 z-40">
       <div className="max-w-6xl mx-auto px-4 h-16 flex items-center justify-between">
-        <Link href="/dashboard" className="flex items-center gap-2 font-bold text-xl text-indigo-600 dark:text-indigo-400">
+        <Link href="/dashboard" className="flex items-center gap-2 font-bold text-xl text-blue-600 dark:text-blue-400">
           <BookOpen size={24} />
           Ememora
         </Link>
@@ -26,7 +26,7 @@ export default function Navbar() {
           {session?.user && (
             <Link
               href="/dashboard"
-              className="hidden sm:flex items-center gap-1.5 text-sm text-slate-600 dark:text-slate-300 hover:text-indigo-600 dark:hover:text-indigo-400 transition-colors"
+              className="hidden sm:flex items-center gap-1.5 text-sm text-slate-600 dark:text-slate-300 hover:text-blue-600 dark:hover:text-blue-400 transition-colors"
             >
               <LayoutDashboard size={16} />
               Dashboard
@@ -36,7 +36,7 @@ export default function Navbar() {
           {mounted && (
             <button
               onClick={() => setTheme(theme === "dark" ? "light" : "dark")}
-              className="p-2 rounded-lg text-slate-500 dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors"
+              className="p-2 rounded-lg text-slate-500 dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-[#252525] transition-colors"
               title={theme === "dark" ? "Modo claro" : "Modo escuro"}
             >
               {theme === "dark" ? <Sun size={18} /> : <Moon size={18} />}
@@ -44,7 +44,7 @@ export default function Navbar() {
           )}
 
           {session?.user && (
-            <div className="flex items-center gap-2 border-l border-slate-200 dark:border-slate-700 pl-3">
+            <div className="flex items-center gap-2 border-l border-slate-200 dark:border-[#2e2e2e] pl-3">
               {session.user.image && (
                 <Image
                   src={session.user.image}

@@ -7,6 +7,7 @@ interface GameConfig {
   includeMaxStatus: boolean;
   showTimer: boolean;
   termCount: number;
+  swapSides: boolean;
 }
 
 interface GameState {
@@ -24,7 +25,8 @@ interface GameState {
 const defaultConfig: GameConfig = {
   includeMaxStatus: true,
   showTimer: true,
-  termCount: 10,
+  termCount: Infinity,
+  swapSides: false,
 };
 
 export const useGameStore = create<GameState>((set) => ({

@@ -33,10 +33,10 @@ export default function StudyListCard({ list, onDeleted }: Props) {
   return (
     <Link
       href={`/lists/${list._id}`}
-      className="group relative bg-white dark:bg-slate-800 rounded-xl border border-slate-200 dark:border-slate-700 p-5 hover:border-indigo-300 dark:hover:border-indigo-500 hover:shadow-md transition-all flex flex-col gap-3"
+      className="group relative bg-white dark:bg-[#1c1c1c] rounded-xl border border-slate-200 dark:border-[#2e2e2e] p-5 hover:border-blue-300 dark:hover:border-blue-500 hover:shadow-md transition-all flex flex-col gap-3"
     >
       <div className="flex items-start justify-between gap-2">
-        <h3 className="font-semibold text-slate-800 dark:text-slate-100 text-lg leading-tight line-clamp-2 group-hover:text-indigo-600 dark:group-hover:text-indigo-400 transition-colors">
+        <h3 className="font-semibold text-slate-800 dark:text-slate-100 text-lg leading-tight line-clamp-2 group-hover:text-blue-600 dark:group-hover:text-blue-400 transition-colors">
           {list.name}
         </h3>
         <button
@@ -56,9 +56,9 @@ export default function StudyListCard({ list, onDeleted }: Props) {
         const pct = Math.round((list.statusSum / (list.termsCount * 6)) * 100);
         return (
           <div className="space-y-1">
-            <div className="h-1.5 bg-slate-100 dark:bg-slate-700 rounded-full overflow-hidden">
+            <div className="h-1.5 bg-slate-100 dark:bg-[#2e2e2e] rounded-full overflow-hidden">
               <div
-                className="h-full bg-indigo-500 rounded-full"
+                className="h-full bg-blue-500 rounded-full"
                 style={{ width: `${pct}%` }}
               />
             </div>

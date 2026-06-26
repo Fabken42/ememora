@@ -82,12 +82,12 @@ export default function ImageUpload({ value, onChange, label }: Props) {
           disabled={loading}
           className={`w-full h-32 rounded-lg border-2 border-dashed flex flex-col items-center justify-center gap-2 transition-colors disabled:opacity-60 ${
             isDragging
-              ? "border-indigo-500 bg-indigo-50 text-indigo-600"
-              : "border-slate-300 text-slate-400 hover:border-indigo-400 hover:text-indigo-500"
+              ? "border-blue-500 bg-blue-50 text-blue-600"
+              : "border-slate-300 text-slate-400 hover:border-blue-400 hover:text-blue-500"
           }`}
         >
           {loading ? (
-            <div className="w-5 h-5 border-2 border-indigo-400 border-t-transparent rounded-full animate-spin" />
+            <div className="w-5 h-5 border-2 border-blue-400 border-t-transparent rounded-full animate-spin" />
           ) : (
             <>
               <Upload size={20} />

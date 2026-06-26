@@ -34,15 +34,15 @@ export default function QuizPage() {
 
   return (
     <div className="max-w-lg mx-auto min-h-screen">
-      <div className="sticky top-0 bg-white border-b border-slate-100 z-10">
+      <div className="sticky top-0 bg-white dark:bg-[#121212] border-b border-slate-100 dark:border-[#2e2e2e] z-10">
         <div className="flex items-center gap-3 px-4 py-3">
           <button
             onClick={() => router.push(`/lists/${id}`)}
-            className="p-1.5 text-slate-400 hover:text-slate-700 transition-colors"
+            className="p-1.5 text-slate-400 hover:text-slate-700 dark:hover:text-slate-200 transition-colors"
           >
             <ChevronLeft size={20} />
           </button>
-          <h1 className="font-semibold text-slate-800">Quiz</h1>
+          <h1 className="font-semibold text-slate-800 dark:text-slate-100">Quiz</h1>
         </div>
       </div>
 

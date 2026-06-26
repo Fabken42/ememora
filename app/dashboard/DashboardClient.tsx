@@ -60,21 +60,21 @@ export default function DashboardClient() {
             onClick={() => setShowFilters((v) => !v)}
             className={`flex items-center gap-2 px-3 py-2 rounded-xl text-sm border transition-colors ${
               showFilters || dashboardGenres.length > 0
-                ? "bg-indigo-50 dark:bg-indigo-900/40 border-indigo-300 dark:border-indigo-600 text-indigo-700 dark:text-indigo-300"
-                : "border-slate-300 dark:border-slate-600 text-slate-600 dark:text-slate-300 hover:bg-slate-50 dark:hover:bg-slate-800"
+                ? "bg-blue-50 dark:bg-blue-900/40 border-blue-300 dark:border-blue-600 text-blue-700 dark:text-blue-300"
+                : "border-slate-300 dark:border-[#383838] text-slate-600 dark:text-slate-300 hover:bg-slate-50 dark:hover:bg-[#252525]"
             }`}
           >
             <SlidersHorizontal size={15} />
             Filtros
             {dashboardGenres.length > 0 && (
-              <span className="bg-indigo-600 text-white text-xs rounded-full w-4 h-4 flex items-center justify-center">
+              <span className="bg-blue-600 text-white text-xs rounded-full w-4 h-4 flex items-center justify-center">
                 {dashboardGenres.length}
               </span>
             )}
           </button>
           <button
             onClick={handleCreateClick}
-            className="flex items-center gap-2 px-4 py-2 rounded-xl text-sm bg-indigo-600 text-white hover:bg-indigo-700 transition-colors"
+            className="flex items-center gap-2 px-4 py-2 rounded-xl text-sm bg-blue-600 text-white hover:bg-blue-700 transition-colors"
           >
             <Plus size={16} />
             Nova lista
@@ -83,13 +83,13 @@ export default function DashboardClient() {
       </div>
 
       {showFilters && (
-        <div className="bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-2xl p-4 space-y-3">
+        <div className="bg-white dark:bg-[#1c1c1c] border border-slate-200 dark:border-[#2e2e2e] rounded-2xl p-4 space-y-3">
           <div className="flex items-center justify-between">
             <p className="text-sm font-medium text-slate-700 dark:text-slate-200">Ordenação</p>
             <select
               value={dashboardSort}
               onChange={(e) => setDashboardSort(e.target.value as "newest" | "oldest")}
-              className="text-sm border border-slate-300 dark:border-slate-600 bg-white dark:bg-slate-700 text-slate-800 dark:text-slate-100 rounded-lg px-2 py-1.5 focus:outline-none focus:ring-1 focus:ring-indigo-500"
+              className="text-sm border border-slate-300 dark:border-[#383838] bg-white dark:bg-[#252525] text-slate-800 dark:text-slate-100 rounded-lg px-2 py-1.5 focus:outline-none focus:ring-1 focus:ring-blue-500"
             >
               <option value="newest">Mais recentes</option>
               <option value="oldest">Mais antigas</option>
@@ -104,8 +104,8 @@ export default function DashboardClient() {
                   onClick={() => toggleGenre(g)}
                   className={`text-xs px-3 py-1.5 rounded-full border transition-colors ${
                     dashboardGenres.includes(g)
-                      ? "bg-indigo-600 border-indigo-600 text-white"
-                      : "border-slate-300 dark:border-slate-600 text-slate-600 dark:text-slate-300 hover:border-indigo-400 dark:hover:border-indigo-500"
+                      ? "bg-blue-600 border-blue-600 text-white"
+                      : "border-slate-300 dark:border-[#383838] text-slate-600 dark:text-slate-300 hover:border-blue-400 dark:hover:border-blue-500"
                   }`}
                 >
                   {GENRE_LABELS[g]}
@@ -116,7 +116,7 @@ export default function DashboardClient() {
           {dashboardGenres.length > 0 && (
             <button
               onClick={() => setDashboardGenres([])}
-              className="text-xs text-indigo-600 dark:text-indigo-400 hover:underline"
+              className="text-xs text-blue-600 dark:text-blue-400 hover:underline"
             >
               Limpar filtros
             </button>
@@ -126,7 +126,7 @@ export default function DashboardClient() {
 
       {loading ? (
         <div className="flex justify-center py-16">
-          <div className="w-7 h-7 border-2 border-indigo-500 border-t-transparent rounded-full animate-spin" />
+          <div className="w-7 h-7 border-2 border-blue-500 border-t-transparent rounded-full animate-spin" />
         </div>
       ) : lists.length === 0 ? (
         <div className="text-center py-20 text-slate-400 dark:text-slate-500 space-y-3">

@@ -54,10 +54,10 @@ export default function GameConfigModal({ listId, mode, onClose, onStart }: Prop
 
   return (
     <div className="fixed inset-0 bg-black/50 z-50 flex items-center justify-center p-4">
-      <div className="bg-white dark:bg-slate-800 rounded-2xl w-full max-w-sm shadow-2xl">
-        <div className="flex items-center justify-between p-6 border-b border-slate-100 dark:border-slate-700">
+      <div className="bg-white dark:bg-[#1c1c1c] rounded-2xl w-full max-w-sm shadow-2xl">
+        <div className="flex items-center justify-between p-6 border-b border-slate-100 dark:border-[#2e2e2e]">
           <div className="flex items-center gap-2">
-            <Settings size={18} className="text-indigo-600 dark:text-indigo-400" />
+            <Settings size={18} className="text-blue-600 dark:text-blue-400" />
             <h2 className="text-lg font-semibold text-slate-800 dark:text-slate-100">Configurar {modeLabel}</h2>
           </div>
           <button onClick={onClose} className="text-slate-400 dark:text-slate-500 hover:text-slate-600 dark:hover:text-slate-300">
@@ -67,7 +67,7 @@ export default function GameConfigModal({ listId, mode, onClose, onStart }: Prop
 
         {loading ? (
           <div className="p-10 flex justify-center">
-            <div className="w-6 h-6 border-2 border-indigo-500 border-t-transparent rounded-full animate-spin" />
+            <div className="w-6 h-6 border-2 border-blue-500 border-t-transparent rounded-full animate-spin" />
           </div>
         ) : (
           <div className="p-6 space-y-5">
@@ -80,7 +80,7 @@ export default function GameConfigModal({ listId, mode, onClose, onStart }: Prop
               </div>
               <div
                 onClick={() => setConfig({ includeMaxStatus: !config.includeMaxStatus })}
-                className={`relative w-10 h-6 rounded-full transition-colors cursor-pointer ${config.includeMaxStatus ? "bg-indigo-600" : "bg-slate-300 dark:bg-slate-600"}`}
+                className={`relative w-10 h-6 rounded-full transition-colors cursor-pointer ${config.includeMaxStatus ? "bg-blue-600" : "bg-slate-300 dark:bg-[#383838]"}`}
               >
                 <div className={`absolute top-1 w-4 h-4 bg-white rounded-full shadow transition-transform ${config.includeMaxStatus ? "translate-x-5" : "translate-x-1"}`} />
               </div>
@@ -93,9 +93,26 @@ export default function GameConfigModal({ listId, mode, onClose, onStart }: Prop
               </div>
               <div
                 onClick={() => setConfig({ showTimer: !config.showTimer })}
-                className={`relative w-10 h-6 rounded-full transition-colors cursor-pointer ${config.showTimer ? "bg-indigo-600" : "bg-slate-300 dark:bg-slate-600"}`}
+                className={`relative w-10 h-6 rounded-full transition-colors cursor-pointer ${config.showTimer ? "bg-blue-600" : "bg-slate-300 dark:bg-[#383838]"}`}
               >
                 <div className={`absolute top-1 w-4 h-4 bg-white rounded-full shadow transition-transform ${config.showTimer ? "translate-x-5" : "translate-x-1"}`} />
+              </div>
+            </label>
+
+            <label className="flex items-center justify-between cursor-pointer">
+              <div>
+                <p className="text-sm font-medium text-slate-700 dark:text-slate-200">Inverter conceito/definição</p>
+                <p className="text-xs text-slate-400 dark:text-slate-500">
+                  {mode === "flashcards"
+                    ? "Definição na frente, conceito no verso"
+                    : "Definição como pergunta, conceito como resposta"}
+                </p>
+              </div>
+              <div
+                onClick={() => setConfig({ swapSides: !config.swapSides })}
+                className={`relative w-10 h-6 rounded-full transition-colors cursor-pointer ${config.swapSides ? "bg-blue-600" : "bg-slate-300 dark:bg-[#383838]"}`}
+              >
+                <div className={`absolute top-1 w-4 h-4 bg-white rounded-full shadow transition-transform ${config.swapSides ? "translate-x-5" : "translate-x-1"}`} />
               </div>
             </label>
 
@@ -110,7 +127,7 @@ export default function GameConfigModal({ listId, mode, onClose, onStart }: Prop
                 max={maxCount}
                 value={termCount}
                 onChange={(e) => setConfig({ termCount: parseInt(e.target.value) || MIN_GAME_TERMS })}
-                className="mt-1 w-full rounded-lg border border-slate-300 dark:border-slate-600 bg-white dark:bg-slate-700 text-slate-800 dark:text-slate-100 px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500"
+                className="mt-1 w-full rounded-lg border border-slate-300 dark:border-[#383838] bg-white dark:bg-[#252525] text-slate-800 dark:text-slate-100 px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
               />
             </div>
 
@@ -126,14 +143,14 @@ export default function GameConfigModal({ listId, mode, onClose, onStart }: Prop
             <div className="flex justify-end gap-2 pt-1">
               <button
                 onClick={onClose}
-                className="px-4 py-2 text-sm rounded-lg border border-slate-300 dark:border-slate-600 text-slate-600 dark:text-slate-300 hover:bg-slate-50 dark:hover:bg-slate-700"
+                className="px-4 py-2 text-sm rounded-lg border border-slate-300 dark:border-[#383838] text-slate-600 dark:text-slate-300 hover:bg-slate-50 dark:hover:bg-[#252525]"
               >
                 Cancelar
               </button>
               <button
                 onClick={handleStart}
                 disabled={!canStart}
-                className="flex items-center gap-2 px-4 py-2 text-sm rounded-lg bg-indigo-600 text-white hover:bg-indigo-700 disabled:opacity-50"
+                className="flex items-center gap-2 px-4 py-2 text-sm rounded-lg bg-blue-600 text-white hover:bg-blue-700 disabled:opacity-50"
               >
                 <Play size={14} />
                 Iniciar

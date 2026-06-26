@@ -23,7 +23,7 @@ export const GENRE_COLORS: Record<Genre, string> = {
   philosophy_sociology: "bg-orange-100 text-orange-800",
   languages: "bg-pink-100 text-pink-800",
   economics: "bg-cyan-100 text-cyan-800",
-  programming: "bg-indigo-100 text-indigo-800",
+  programming: "bg-blue-100 text-blue-800",
   entertainment_news: "bg-red-100 text-red-800",
   arts: "bg-rose-100 text-rose-800",
 };

@@ -98,20 +98,20 @@ export default function ListClient({ list: initialList }: Props) {
 
   const termCountLocal = list.termsCount;
 
-  const inputCls = "mt-1 w-full rounded-lg border border-slate-300 dark:border-slate-600 bg-white dark:bg-slate-700 text-slate-800 dark:text-slate-100 px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500";
+  const inputCls = "mt-1 w-full rounded-lg border border-slate-300 dark:border-[#383838] bg-white dark:bg-[#252525] text-slate-800 dark:text-slate-100 px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500";
 
   return (
     <div className="max-w-4xl mx-auto px-4 py-8 space-y-6">
       <Link
         href="/dashboard"
-        className="inline-flex items-center gap-1 text-sm text-slate-500 dark:text-slate-400 hover:text-indigo-600 dark:hover:text-indigo-400 transition-colors"
+        className="inline-flex items-center gap-1 text-sm text-slate-500 dark:text-slate-400 hover:text-blue-600 dark:hover:text-blue-400 transition-colors"
       >
         <ChevronLeft size={16} />
         Dashboard
       </Link>
 
       {editingList ? (
-        <form onSubmit={saveListEdit} className="bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-2xl p-6 space-y-4">
+        <form onSubmit={saveListEdit} className="bg-white dark:bg-[#1c1c1c] border border-slate-200 dark:border-[#2e2e2e] rounded-2xl p-6 space-y-4">
           <div>
             <label className="text-sm font-medium text-slate-700 dark:text-slate-200">Nome</label>
             <input
@@ -144,12 +144,12 @@ export default function ListClient({ list: initialList }: Props) {
             </select>
           </div>
           <div className="flex gap-2 justify-end">
-            <button type="button" onClick={() => setEditingList(false)} className="px-4 py-2 text-sm border border-slate-300 dark:border-slate-600 rounded-lg text-slate-600 dark:text-slate-300 hover:bg-slate-50 dark:hover:bg-slate-700">Cancelar</button>
-            <button type="submit" className="px-4 py-2 text-sm bg-indigo-600 text-white rounded-lg hover:bg-indigo-700">Salvar</button>
+            <button type="button" onClick={() => setEditingList(false)} className="px-4 py-2 text-sm border border-slate-300 dark:border-[#383838] rounded-lg text-slate-600 dark:text-slate-300 hover:bg-slate-50 dark:hover:bg-[#252525]">Cancelar</button>
+            <button type="submit" className="px-4 py-2 text-sm bg-blue-600 text-white rounded-lg hover:bg-blue-700">Salvar</button>
           </div>
         </form>
       ) : (
-        <div className="bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-2xl p-6 space-y-3">
+        <div className="bg-white dark:bg-[#1c1c1c] border border-slate-200 dark:border-[#2e2e2e] rounded-2xl p-6 space-y-3">
           <div className="flex items-start justify-between gap-3">
             <div className="space-y-1 flex-1 min-w-0">
               <h1 className="text-2xl font-bold text-slate-800 dark:text-slate-100 break-words">{list.name}</h1>
@@ -163,7 +163,7 @@ export default function ListClient({ list: initialList }: Props) {
                 <span className="text-xs text-slate-400 dark:text-slate-500">{total} {total === 1 ? "termo" : "termos"}</span>
               </div>
             </div>
-            <button onClick={() => setEditingList(true)} className="shrink-0 p-2 text-slate-400 dark:text-slate-500 hover:text-indigo-600 dark:hover:text-indigo-400 transition-colors" title="Editar lista">
+            <button onClick={() => setEditingList(true)} className="shrink-0 p-2 text-slate-400 dark:text-slate-500 hover:text-blue-600 dark:hover:text-blue-400 transition-colors" title="Editar lista">
               <Pencil size={16} />
             </button>
           </div>
@@ -176,9 +176,9 @@ export default function ListClient({ list: initialList }: Props) {
                   <span>Progresso</span>
                   <span>{pct}%</span>
                 </div>
-                <div className="h-2 bg-slate-100 dark:bg-slate-700 rounded-full overflow-hidden">
+                <div className="h-2 bg-slate-100 dark:bg-[#2e2e2e] rounded-full overflow-hidden">
                   <div
-                    className="h-full bg-indigo-500 rounded-full transition-all duration-500"
+                    className="h-full bg-blue-500 rounded-full transition-all duration-500"
                     style={{ width: `${pct}%` }}
                   />
                 </div>
@@ -186,10 +186,10 @@ export default function ListClient({ list: initialList }: Props) {
             );
           })()}
 
-          <div className="flex gap-2 pt-1 border-t border-slate-100 dark:border-slate-700 mt-3">
+          <div className="flex gap-2 pt-1 border-t border-slate-100 dark:border-[#2e2e2e] mt-3">
             <Link
               href={`/lists/${list._id}/flashcards`}
-              className="flex items-center gap-2 px-4 py-2 rounded-xl text-sm bg-indigo-600 text-white hover:bg-indigo-700 transition-colors"
+              className="flex items-center gap-2 px-4 py-2 rounded-xl text-sm bg-blue-600 text-white hover:bg-blue-700 transition-colors"
             >
               <Layers size={15} />
               Flashcards
@@ -214,7 +214,7 @@ export default function ListClient({ list: initialList }: Props) {
           <button
             onClick={handleBulkDecrement}
             disabled={bulkLoading || termCountLocal === 0}
-            className="flex items-center gap-1 px-2 py-1 text-xs rounded-lg border border-slate-300 dark:border-slate-600 text-slate-500 dark:text-slate-400 hover:border-red-300 dark:hover:border-red-500 hover:text-red-500 dark:hover:text-red-400 transition-colors disabled:opacity-40 disabled:cursor-not-allowed"
+            className="flex items-center gap-1 px-2 py-1 text-xs rounded-lg border border-slate-300 dark:border-[#383838] text-slate-500 dark:text-slate-400 hover:border-red-300 dark:hover:border-red-500 hover:text-red-500 dark:hover:text-red-400 transition-colors disabled:opacity-40 disabled:cursor-not-allowed"
             title="Diminuir status de todos os termos em 1"
           >
             <TrendingDown size={13} />
@@ -223,7 +223,7 @@ export default function ListClient({ list: initialList }: Props) {
           {termCountLocal < MAX_TERMS && (
             <button
               onClick={() => setShowImport(true)}
-              className="flex items-center gap-1 px-2 py-1 text-xs rounded-lg border border-slate-300 dark:border-slate-600 text-slate-500 dark:text-slate-400 hover:border-indigo-300 dark:hover:border-indigo-500 hover:text-indigo-600 dark:hover:text-indigo-400 transition-colors"
+              className="flex items-center gap-1 px-2 py-1 text-xs rounded-lg border border-slate-300 dark:border-[#383838] text-slate-500 dark:text-slate-400 hover:border-blue-300 dark:hover:border-blue-500 hover:text-blue-600 dark:hover:text-blue-400 transition-colors"
               title="Importar termos via CSV"
             >
               <Upload size={13} />
@@ -234,7 +234,7 @@ export default function ListClient({ list: initialList }: Props) {
         <select
           value={termSort}
           onChange={(e) => setTermSort(e.target.value as Parameters<typeof setTermSort>[0])}
-          className="text-sm border border-slate-300 dark:border-slate-600 bg-white dark:bg-slate-700 text-slate-800 dark:text-slate-100 rounded-lg px-2 py-1.5 focus:outline-none focus:ring-1 focus:ring-indigo-500"
+          className="text-sm border border-slate-300 dark:border-[#383838] bg-white dark:bg-[#252525] text-slate-800 dark:text-slate-100 rounded-lg px-2 py-1.5 focus:outline-none focus:ring-1 focus:ring-blue-500"
         >
           <option value="default">Padrão (mais recentes)</option>
           <option value="reverse">Inversa (mais antigos)</option>
@@ -244,8 +244,8 @@ export default function ListClient({ list: initialList }: Props) {
       </div>
 
       {termCountLocal < MAX_TERMS ? (
-        <div className="bg-indigo-50 dark:bg-indigo-900/30 border border-indigo-200 dark:border-indigo-700 rounded-2xl p-5">
-          <h3 className="text-sm font-semibold text-indigo-700 dark:text-indigo-300 mb-4">Novo termo</h3>
+        <div className="bg-blue-50 dark:bg-blue-900/30 border border-blue-200 dark:border-blue-700 rounded-2xl p-5">
+          <h3 className="text-sm font-semibold text-blue-700 dark:text-blue-300 mb-4">Novo termo</h3>
           <TermForm
             key={formKey}
             listId={list._id}
@@ -267,7 +267,7 @@ export default function ListClient({ list: initialList }: Props) {
 
       {loading ? (
         <div className="flex justify-center py-12">
-          <div className="w-6 h-6 border-2 border-indigo-500 border-t-transparent rounded-full animate-spin" />
+          <div className="w-6 h-6 border-2 border-blue-500 border-t-transparent rounded-full animate-spin" />
         </div>
       ) : terms.length === 0 ? (
         <div className="text-center py-12 text-slate-400 dark:text-slate-500 space-y-2">

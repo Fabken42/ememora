@@ -30,7 +30,7 @@ function Summary({ results, elapsed, onReset, onBackToList }: SummaryProps) {
 
   return (
     <div className="flex flex-col items-center gap-6 py-12 px-4 text-center">
-      <Trophy size={48} className="text-indigo-500" />
+      <Trophy size={48} className="text-blue-500" />
       <h2 className="text-2xl font-bold text-slate-800 dark:text-slate-100">Fim de Jogo!</h2>
 
       <div className="grid grid-cols-3 gap-4 w-full max-w-xs">
@@ -42,7 +42,7 @@ function Summary({ results, elapsed, onReset, onBackToList }: SummaryProps) {
           <p className="text-2xl font-bold text-red-500">{incorrect}</p>
           <p className="text-xs text-red-700 dark:text-red-400 mt-1">Erros</p>
         </div>
-        <div className="bg-slate-50 dark:bg-slate-700 rounded-xl p-4">
+        <div className="bg-slate-50 dark:bg-[#252525] rounded-xl p-4">
           <p className="text-2xl font-bold text-slate-500 dark:text-slate-300">{skipped}</p>
           <p className="text-xs text-slate-600 dark:text-slate-400 mt-1">Pulados</p>
         </div>
@@ -55,14 +55,14 @@ function Summary({ results, elapsed, onReset, onBackToList }: SummaryProps) {
       <div className="flex gap-3">
         <button
           onClick={onBackToList}
-          className="flex items-center gap-2 px-5 py-3 bg-slate-100 dark:bg-slate-700 text-slate-700 dark:text-slate-200 rounded-xl hover:bg-slate-200 dark:hover:bg-slate-600 transition-colors"
+          className="flex items-center gap-2 px-5 py-3 bg-slate-100 dark:bg-[#252525] text-slate-700 dark:text-slate-200 rounded-xl hover:bg-slate-200 dark:hover:bg-[#2f2f2f] transition-colors"
         >
           <BookOpen size={16} />
           Voltar para lista
         </button>
         <button
           onClick={onReset}
-          className="flex items-center gap-2 px-5 py-3 bg-indigo-600 text-white rounded-xl hover:bg-indigo-700 transition-colors"
+          className="flex items-center gap-2 px-5 py-3 bg-blue-600 text-white rounded-xl hover:bg-blue-700 transition-colors"
         >
           <RotateCcw size={16} />
           Novo jogo
@@ -174,7 +174,7 @@ export default function FlashcardGame({ listId, initialTerms, onExit }: Props) {
   if (terms.length === 0) {
     return (
       <div className="flex justify-center py-20">
-        <div className="w-6 h-6 border-2 border-indigo-500 border-t-transparent rounded-full animate-spin" />
+        <div className="w-6 h-6 border-2 border-blue-500 border-t-transparent rounded-full animate-spin" />
       </div>
     );
   }
@@ -184,7 +184,7 @@ export default function FlashcardGame({ listId, initialTerms, onExit }: Props) {
   return (
     <div {...handlers} className="flex flex-col items-center gap-6 py-6 px-4 select-none">
       {config.showTimer && (
-        <div className="flex items-center gap-1.5 text-sm text-slate-500 dark:text-slate-400 bg-slate-100 dark:bg-slate-700 px-3 py-1.5 rounded-full">
+        <div className="flex items-center gap-1.5 text-sm text-slate-500 dark:text-slate-400 bg-slate-100 dark:bg-[#252525] px-3 py-1.5 rounded-full">
           <Clock size={14} />
           {formatTime(elapsed)}
         </div>
@@ -211,29 +211,41 @@ export default function FlashcardGame({ listId, initialTerms, onExit }: Props) {
           <div
             className={`relative w-full min-h-64 border-2 rounded-2xl shadow-lg p-6 flex flex-col items-center justify-center gap-3 ${
               flipped
-                ? "border-indigo-300 dark:border-indigo-600 bg-indigo-50 dark:bg-indigo-900/30"
-                : "bg-white dark:bg-slate-800 border-slate-200 dark:border-slate-700"
+                ? "border-blue-300 dark:border-blue-600 bg-blue-50 dark:bg-blue-900/30"
+                : "bg-white dark:bg-[#1c1c1c] border-slate-200 dark:border-[#2e2e2e]"
             }`}
           >
             <div className="absolute top-3 right-3">
               <StatusIcon status={term.status} size={20} />
             </div>
-            <p className="text-xs font-semibold text-slate-400 dark:text-slate-500 uppercase tracking-wide">
-              {flipped ? "Definição" : "Conceito"}
-            </p>
-            <p className="text-lg text-slate-800 dark:text-slate-100 text-center font-medium">
-              {flipped ? term.definition : term.concept}
-            </p>
-            {!flipped && term.conceptImage && (
-              <div className="relative w-full h-40 rounded-xl overflow-hidden border border-slate-100 dark:border-slate-700">
-                <Image src={term.conceptImage} alt="" fill className="object-contain bg-slate-50 dark:bg-slate-700" />
-              </div>
-            )}
-            {flipped && term.definitionImage && (
-              <div className="relative w-full h-40 rounded-xl overflow-hidden border border-slate-100 dark:border-slate-700">
-                <Image src={term.definitionImage} alt="" fill className="object-contain bg-indigo-50 dark:bg-indigo-900/30" />
-              </div>
-            )}
+            {(() => {
+              const frontLabel = config.swapSides ? "Definição" : "Conceito";
+              const backLabel = config.swapSides ? "Conceito" : "Definição";
+              const frontText = config.swapSides ? term.definition : term.concept;
+              const backText = config.swapSides ? term.concept : term.definition;
+              const frontImage = config.swapSides ? term.definitionImage : term.conceptImage;
+              const backImage = config.swapSides ? term.conceptImage : term.definitionImage;
+              return (
+                <>
+                  <p className="text-xs font-semibold text-slate-400 dark:text-slate-500 uppercase tracking-wide">
+                    {flipped ? backLabel : frontLabel}
+                  </p>
+                  <p className="text-lg text-slate-800 dark:text-slate-100 text-center font-medium">
+                    {flipped ? backText : frontText}
+                  </p>
+                  {!flipped && frontImage && (
+                    <div className="relative w-full h-40 rounded-xl overflow-hidden border border-slate-100 dark:border-[#2e2e2e]">
+                      <Image src={frontImage} alt="" fill className="object-contain bg-gray-50 dark:bg-[#252525]" />
+                    </div>
+                  )}
+                  {flipped && backImage && (
+                    <div className="relative w-full h-40 rounded-xl overflow-hidden border border-slate-100 dark:border-[#2e2e2e]">
+                      <Image src={backImage} alt="" fill className="object-contain bg-blue-50 dark:bg-blue-900/30" />
+                    </div>
+                  )}
+                </>
+              );
+            })()}
             <p className="text-xs text-slate-300 dark:text-slate-600 mt-2">Toque para virar</p>
           </div>
         </div>
@@ -250,7 +262,7 @@ export default function FlashcardGame({ listId, initialTerms, onExit }: Props) {
         </button>
         <button
           onClick={() => advance("down")}
-          className="flex flex-col items-center gap-1 p-3 bg-slate-50 dark:bg-slate-700 text-slate-500 dark:text-slate-400 rounded-2xl hover:bg-slate-100 dark:hover:bg-slate-600 transition-colors active:scale-95"
+          className="flex flex-col items-center gap-1 p-3 bg-gray-50 dark:bg-[#252525] text-slate-500 dark:text-slate-400 rounded-2xl hover:bg-slate-100 dark:hover:bg-slate-600 transition-colors active:scale-95"
           title="Pular"
         >
           <ArrowDown size={18} />

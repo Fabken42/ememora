@@ -5,10 +5,10 @@ import { BookOpen } from "lucide-react";
 
 export default function LoginClient() {
   return (
-    <div className="min-h-screen bg-gradient-to-br from-indigo-50 to-slate-100 flex items-center justify-center p-4">
+    <div className="min-h-screen bg-gradient-to-br from-blue-50 to-slate-100 dark:from-[#121212] dark:to-[#121212] flex items-center justify-center p-4">
       <div className="bg-white rounded-2xl shadow-xl w-full max-w-sm p-8 flex flex-col items-center gap-6">
         <div className="flex flex-col items-center gap-2">
-          <div className="bg-indigo-600 text-white rounded-2xl p-3">
+          <div className="bg-blue-600 text-white rounded-2xl p-3">
             <BookOpen size={32} />
           </div>
           <h1 className="text-2xl font-bold text-slate-800">Ememora</h1>

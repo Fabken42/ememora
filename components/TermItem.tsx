@@ -55,9 +55,9 @@ export default function TermItem({ term, listId, onChanged, onStatusChanged }: P
 
   if (editing) {
     return (
-      <div className="bg-indigo-50 dark:bg-indigo-900/30 border border-indigo-200 dark:border-indigo-700 rounded-xl p-4">
+      <div className="bg-blue-50 dark:bg-blue-900/30 border border-blue-200 dark:border-blue-700 rounded-xl p-4">
         <div className="flex justify-between items-center mb-3">
-          <h4 className="text-sm font-semibold text-indigo-700 dark:text-indigo-300">Editar termo</h4>
+          <h4 className="text-sm font-semibold text-blue-700 dark:text-blue-300">Editar termo</h4>
           <button onClick={() => setEditing(false)} className="text-slate-400 dark:text-slate-500 hover:text-slate-600 dark:hover:text-slate-300">
             <X size={16} />
           </button>
@@ -73,14 +73,14 @@ export default function TermItem({ term, listId, onChanged, onStatusChanged }: P
   }
 
   return (
-    <div className="bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl p-4 flex gap-4">
+    <div className="bg-white dark:bg-[#1c1c1c] border border-slate-200 dark:border-[#2e2e2e] rounded-xl p-4 flex gap-4">
       <div className="flex-1 grid sm:grid-cols-2 gap-3 min-w-0">
         <div className="space-y-1.5">
           <p className="text-xs font-semibold text-slate-400 dark:text-slate-500 uppercase tracking-wide">Conceito</p>
           <p className="text-sm text-slate-800 dark:text-slate-100 break-words">{term.concept}</p>
           {term.conceptImage && (
-            <div className="relative h-24 w-full rounded-lg overflow-hidden border border-slate-100 dark:border-slate-700">
-              <Image src={term.conceptImage} alt="conceito" fill className="object-contain bg-slate-50 dark:bg-slate-700" />
+            <div className="relative h-24 w-full rounded-lg overflow-hidden border border-slate-100 dark:border-[#2e2e2e]">
+              <Image src={term.conceptImage} alt="conceito" fill className="object-contain bg-gray-50 dark:bg-[#252525]" />
             </div>
           )}
         </div>
@@ -88,8 +88,8 @@ export default function TermItem({ term, listId, onChanged, onStatusChanged }: P
           <p className="text-xs font-semibold text-slate-400 dark:text-slate-500 uppercase tracking-wide">Definição</p>
           <p className="text-sm text-slate-800 dark:text-slate-100 break-words">{term.definition}</p>
           {term.definitionImage && (
-            <div className="relative h-24 w-full rounded-lg overflow-hidden border border-slate-100 dark:border-slate-700">
-              <Image src={term.definitionImage} alt="definição" fill className="object-contain bg-slate-50 dark:bg-slate-700" />
+            <div className="relative h-24 w-full rounded-lg overflow-hidden border border-slate-100 dark:border-[#2e2e2e]">
+              <Image src={term.definitionImage} alt="definição" fill className="object-contain bg-gray-50 dark:bg-[#252525]" />
             </div>
           )}
         </div>
@@ -118,7 +118,7 @@ export default function TermItem({ term, listId, onChanged, onStatusChanged }: P
         <div className="flex gap-1">
           <button
             onClick={() => setEditing(true)}
-            className="p-1.5 text-slate-400 dark:text-slate-500 hover:text-indigo-600 dark:hover:text-indigo-400 transition-colors"
+            className="p-1.5 text-slate-400 dark:text-slate-500 hover:text-blue-600 dark:hover:text-blue-400 transition-colors"
             title="Editar"
           >
             <Pencil size={15} />

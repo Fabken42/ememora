@@ -96,10 +96,10 @@ export default function ImportTermsModal({ listId, remainingSlots, onClose, onIm
 
   return (
     <div className="fixed inset-0 bg-black/50 z-50 flex items-center justify-center p-4">
-      <div className="bg-white dark:bg-slate-800 rounded-2xl w-full max-w-lg shadow-2xl flex flex-col max-h-[90vh]">
+      <div className="bg-white dark:bg-[#1c1c1c] rounded-2xl w-full max-w-lg shadow-2xl flex flex-col max-h-[90vh]">
 
         {/* Header */}
-        <div className="flex items-center justify-between p-6 border-b border-slate-100 dark:border-slate-700 shrink-0">
+        <div className="flex items-center justify-between p-6 border-b border-slate-100 dark:border-[#2e2e2e] shrink-0">
           <h2 className="text-lg font-semibold text-slate-800 dark:text-slate-100">Importar termos via CSV</h2>
           <button onClick={onClose} className="text-slate-400 dark:text-slate-500 hover:text-slate-600 dark:hover:text-slate-300">
             <X size={20} />
@@ -109,10 +109,10 @@ export default function ImportTermsModal({ listId, remainingSlots, onClose, onIm
         <div className="p-6 space-y-4 overflow-y-auto">
 
           {/* Format hint */}
-          <div className="bg-slate-50 dark:bg-slate-700/50 rounded-xl p-4 text-xs text-slate-600 dark:text-slate-300 space-y-1">
+          <div className="bg-slate-50 dark:bg-[#252525] rounded-xl p-4 text-xs text-slate-600 dark:text-slate-300 space-y-1">
             <p className="font-semibold text-slate-700 dark:text-slate-200">Formato esperado</p>
             <p>Uma linha por termo, conceito e definição separados por vírgula:</p>
-            <pre className="mt-2 font-mono bg-white dark:bg-slate-700 rounded-lg p-2 text-slate-700 dark:text-slate-200 overflow-x-auto">
+            <pre className="mt-2 font-mono bg-white dark:bg-[#2e2e2e] rounded-lg p-2 text-slate-700 dark:text-slate-200 overflow-x-auto">
               {`fotossíntese,processo pelo qual plantas convertem luz em energia\nmitose,divisão celular que gera duas células idênticas`}
             </pre>
           </div>
@@ -125,8 +125,8 @@ export default function ImportTermsModal({ listId, remainingSlots, onClose, onIm
             onClick={() => fileRef.current?.click()}
             className={`border-2 border-dashed rounded-xl p-4 flex items-center gap-3 cursor-pointer transition-colors ${
               dragging
-                ? "border-indigo-400 bg-indigo-50 dark:bg-indigo-900/30"
-                : "border-slate-200 dark:border-slate-600 hover:border-indigo-300 dark:hover:border-indigo-500 hover:bg-slate-50 dark:hover:bg-slate-700/50"
+                ? "border-blue-400 bg-blue-50 dark:bg-blue-900/30"
+                : "border-slate-200 dark:border-[#383838] hover:border-blue-300 dark:hover:border-blue-500 hover:bg-slate-50 dark:hover:bg-[#252525]"
             }`}
           >
             <Upload size={20} className="text-slate-400 dark:text-slate-500 shrink-0" />
@@ -147,7 +147,7 @@ export default function ImportTermsModal({ listId, remainingSlots, onClose, onIm
               onChange={(e) => setText(e.target.value)}
               rows={8}
               placeholder={"fotossíntese,processo pelo qual plantas convertem luz em energia\nmitose,divisão celular que gera duas células idênticas"}
-              className="mt-1 w-full rounded-xl border border-slate-300 dark:border-slate-600 bg-white dark:bg-slate-700 text-slate-800 dark:text-slate-100 placeholder-slate-400 dark:placeholder-slate-500 px-3 py-2 text-sm font-mono focus:outline-none focus:ring-2 focus:ring-indigo-500 resize-none"
+              className="mt-1 w-full rounded-xl border border-slate-300 dark:border-[#383838] bg-white dark:bg-[#252525] text-slate-800 dark:text-slate-100 placeholder-slate-400 dark:placeholder-slate-500 px-3 py-2 text-sm font-mono focus:outline-none focus:ring-2 focus:ring-blue-500 resize-none"
             />
           </div>
 
@@ -187,18 +187,18 @@ export default function ImportTermsModal({ listId, remainingSlots, onClose, onIm
         </div>
 
         {/* Footer */}
-        <div className="flex justify-end gap-2 p-6 border-t border-slate-100 dark:border-slate-700 shrink-0">
+        <div className="flex justify-end gap-2 p-6 border-t border-slate-100 dark:border-[#2e2e2e] shrink-0">
           <button
             type="button"
             onClick={onClose}
-            className="px-4 py-2 text-sm rounded-lg border border-slate-300 dark:border-slate-600 text-slate-600 dark:text-slate-300 hover:bg-slate-50 dark:hover:bg-slate-700"
+            className="px-4 py-2 text-sm rounded-lg border border-slate-300 dark:border-[#383838] text-slate-600 dark:text-slate-300 hover:bg-slate-50 dark:hover:bg-[#252525]"
           >
             Cancelar
           </button>
           <button
             onClick={handleImport}
             disabled={loading || toImport === 0}
-            className="flex items-center gap-2 px-4 py-2 text-sm rounded-lg bg-indigo-600 text-white hover:bg-indigo-700 disabled:opacity-50 transition-colors"
+            className="flex items-center gap-2 px-4 py-2 text-sm rounded-lg bg-blue-600 text-white hover:bg-blue-700 disabled:opacity-50 transition-colors"
           >
             {loading ? (
               <div className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin" />
