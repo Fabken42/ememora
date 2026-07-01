@@ -99,6 +99,10 @@ export default function FlashcardGame({ listId, initialTerms, onExit }: Props) {
   }, []);
 
   useEffect(() => {
+    setFlipped(false);
+  }, [currentIndex]);
+
+  useEffect(() => {
     if (!config.showTimer || !startTime || isDone) return;
     const id = setInterval(() => setElapsed(Date.now() - startTime), 1000);
     return () => clearInterval(id);

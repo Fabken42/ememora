@@ -23,7 +23,7 @@ interface GameState {
 }
 
 const defaultConfig: GameConfig = {
-  includeMaxStatus: true,
+  includeMaxStatus: false,
   showTimer: true,
   termCount: Infinity,
   swapSides: false,
