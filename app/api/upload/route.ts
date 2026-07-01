@@ -3,6 +3,18 @@ import { getServerSession } from "next-auth";
 import { authOptions } from "@/lib/authOptions";
 import cloudinary from "@/lib/cloudinary";
 
+function detectImageType(buf: Buffer): string | null {
+  if (buf[0] === 0xff && buf[1] === 0xd8 && buf[2] === 0xff) return "image/jpeg";
+  if (buf[0] === 0x89 && buf[1] === 0x50 && buf[2] === 0x4e && buf[3] === 0x47) return "image/png";
+  if (buf[0] === 0x47 && buf[1] === 0x49 && buf[2] === 0x46 && buf[3] === 0x38) return "image/gif";
+  // WebP: RIFF????WEBP
+  if (
+    buf[0] === 0x52 && buf[1] === 0x49 && buf[2] === 0x46 && buf[3] === 0x46 &&
+    buf[8] === 0x57 && buf[9] === 0x45 && buf[10] === 0x42 && buf[11] === 0x50
+  ) return "image/webp";
+  return null;
+}
+
 export async function POST(req: NextRequest) {
   const session = await getServerSession(authOptions);
   if (!session?.user) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
@@ -24,7 +36,14 @@ export async function POST(req: NextRequest) {
 
   const bytes = await file.arrayBuffer();
   const buffer = Buffer.from(bytes);
-  const base64 = `data:${file.type};base64,${buffer.toString("base64")}`;
+
+  // Validate actual file signature (magic bytes) to prevent MIME spoofing
+  const detectedType = detectImageType(buffer);
+  if (!detectedType) {
+    return NextResponse.json({ error: "Arquivo não reconhecido como imagem válida." }, { status: 400 });
+  }
+
+  const base64 = `data:${detectedType};base64,${buffer.toString("base64")}`;
 
   const result = await cloudinary.uploader.upload(base64, {
     folder: "ememora",

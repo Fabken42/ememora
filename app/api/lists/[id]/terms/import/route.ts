@@ -43,7 +43,10 @@ export async function POST(req: NextRequest, { params }: { params: Promise<{ id:
   }));
 
   await Term.insertMany(toInsert);
-  await StudyList.findByIdAndUpdate(list._id, { $inc: { termsCount: toInsert.length } });
+  // Default status is 3, so statusSum increases by 3 per imported term
+  await StudyList.findByIdAndUpdate(list._id, {
+    $inc: { termsCount: toInsert.length, statusSum: toInsert.length * 3 },
+  });
 
   return NextResponse.json({ inserted: toInsert.length, skipped: terms.length - toInsert.length });
 }

@@ -20,9 +20,12 @@ const StudyListSchema = new Schema<IStudyList>(
     description: { type: String, trim: true, maxlength: 500 },
     genre: { type: String, enum: GENRES },
     termsCount: { type: Number, default: 0, min: 0 },
+    statusSum: { type: Number, default: 0, min: 0 },
   },
   { timestamps: true }
 );
+
+StudyListSchema.index({ createdAt: -1 });
 
 const StudyList: Model<IStudyList> =
   (mongoose.models["StudyList"] as Model<IStudyList>) ||

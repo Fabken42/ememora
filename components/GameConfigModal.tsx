@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { X, Play, Settings, AlertCircle } from "lucide-react";
+import { X, Play, Settings, AlertCircle, RefreshCw } from "lucide-react";
 import { useGameStore } from "@/store/useGameStore";
 import type { ITerm } from "@/models/Term";
 import { MIN_GAME_TERMS } from "@/lib/constants";
@@ -28,13 +28,17 @@ export default function GameConfigModal({ listId, mode, onClose, onStart }: Prop
   const { config, setConfig } = useGameStore();
   const [allTerms, setAllTerms] = useState<ITerm[]>([]);
   const [loading, setLoading] = useState(true);
+  const [fetchError, setFetchError] = useState(false);
+  const [retryCount, setRetryCount] = useState(0);
 
   useEffect(() => {
+    setLoading(true);
+    setFetchError(false);
     fetch(`/api/lists/${listId}/terms?all=true`)
       .then((r) => r.json())
       .then((d) => { setAllTerms(d.terms ?? []); setLoading(false); })
-      .catch(() => { toast.error("Erro ao carregar termos."); setLoading(false); });
-  }, [listId]);
+      .catch(() => { setFetchError(true); setLoading(false); toast.error("Erro ao carregar termos."); });
+  }, [listId, retryCount]);
 
   const eligible = config.includeMaxStatus
     ? allTerms
@@ -68,6 +72,18 @@ export default function GameConfigModal({ listId, mode, onClose, onStart }: Prop
         {loading ? (
           <div className="p-10 flex justify-center">
             <div className="w-6 h-6 border-2 border-blue-500 border-t-transparent rounded-full animate-spin" />
+          </div>
+        ) : fetchError ? (
+          <div className="p-10 flex flex-col items-center gap-4 text-center">
+            <AlertCircle size={32} className="text-red-400" />
+            <p className="text-sm text-slate-600 dark:text-slate-300">Não foi possível carregar os termos.</p>
+            <button
+              onClick={() => setRetryCount((c) => c + 1)}
+              className="flex items-center gap-2 px-4 py-2 text-sm rounded-lg bg-blue-600 text-white hover:bg-blue-700"
+            >
+              <RefreshCw size={14} />
+              Tentar novamente
+            </button>
           </div>
         ) : (
           <div className="p-6 space-y-5">

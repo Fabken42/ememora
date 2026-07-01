@@ -8,6 +8,7 @@ import { useGameStore } from "@/store/useGameStore";
 import StatusIcon from "@/components/StatusIcon";
 import type { ITerm } from "@/models/Term";
 import toast from "react-hot-toast";
+import { sanitizeHtml } from "@/lib/sanitize";
 
 function formatTime(ms: number) {
   const s = Math.floor(ms / 1000);
@@ -203,7 +204,7 @@ export default function QuizGame({ listId, initialTerms, allTerms, onExit }: Pro
         </p>
         <div
           className="text-lg font-medium text-slate-800 dark:text-slate-100 rich-content"
-          dangerouslySetInnerHTML={{ __html: config.swapSides ? term.definition : term.concept }}
+          dangerouslySetInnerHTML={{ __html: sanitizeHtml(config.swapSides ? term.definition : term.concept) }}
         />
         {(config.swapSides ? term.definitionImage : term.conceptImage) && (
           <div className="relative h-40 w-full rounded-xl overflow-hidden border border-slate-100 dark:border-[#2e2e2e]">
@@ -242,7 +243,7 @@ export default function QuizGame({ listId, initialTerms, allTerms, onExit }: Pro
                   <Image src={opt.image} alt="" fill className="object-contain" />
                 </div>
               )}
-              <div className="text-sm font-medium rich-content" dangerouslySetInnerHTML={{ __html: opt.text }} />
+              <div className="text-sm font-medium rich-content" dangerouslySetInnerHTML={{ __html: sanitizeHtml(opt.text) }} />
               {selected !== null && opt.correct && (
                 <CheckCircle2 className="absolute top-3 right-3 text-green-500" size={16} />
               )}

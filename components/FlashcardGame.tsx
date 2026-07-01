@@ -9,6 +9,7 @@ import { useGameStore } from "@/store/useGameStore";
 import StatusIcon from "@/components/StatusIcon";
 import type { ITerm } from "@/models/Term";
 import toast from "react-hot-toast";
+import { sanitizeHtml } from "@/lib/sanitize";
 
 function formatTime(ms: number) {
   const s = Math.floor(ms / 1000);
@@ -232,7 +233,7 @@ export default function FlashcardGame({ listId, initialTerms, onExit }: Props) {
                   </p>
                   <div
                     className="text-lg text-slate-800 dark:text-slate-100 text-center font-medium rich-content"
-                    dangerouslySetInnerHTML={{ __html: flipped ? backText : frontText }}
+                    dangerouslySetInnerHTML={{ __html: sanitizeHtml(flipped ? backText : frontText) }}
                   />
                   {!flipped && frontImage && (
                     <div className="relative w-full h-40 rounded-xl overflow-hidden border border-slate-100 dark:border-[#2e2e2e]">

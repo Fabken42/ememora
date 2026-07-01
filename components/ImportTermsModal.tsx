@@ -3,6 +3,7 @@
 import { useState, useRef, useCallback } from "react";
 import { X, Upload, FileText, AlertCircle, CheckCircle2 } from "lucide-react";
 import toast from "react-hot-toast";
+import { escapeHtml } from "@/lib/sanitize";
 
 interface ParsedTerm {
   concept: string;
@@ -14,20 +15,65 @@ interface ParseResult {
   invalidLines: number[];
 }
 
+function parseField(line: string, pos: number): { value: string; next: number } | null {
+  if (pos >= line.length) return { value: "", next: pos };
+
+  if (line[pos] === '"') {
+    // Quoted field — supports embedded commas and escaped quotes ("")
+    let value = "";
+    let i = pos + 1;
+    while (i < line.length) {
+      if (line[i] === '"') {
+        if (line[i + 1] === '"') { value += '"'; i += 2; }
+        else { i++; break; }
+      } else {
+        value += line[i];
+        i++;
+      }
+    }
+    // Skip optional whitespace after closing quote before comma/end
+    while (i < line.length && line[i] === " ") i++;
+    return { value, next: i };
+  }
+
+  // Unquoted field — read until first comma
+  const end = line.indexOf(",", pos);
+  const value = end === -1 ? line.slice(pos) : line.slice(pos, end);
+  return { value, next: end === -1 ? line.length : end };
+}
+
+function parseCSVLine(line: string): [string, string] | null {
+  const trimmed = line.trim();
+  if (!trimmed) return null;
+
+  const conceptResult = parseField(trimmed, 0);
+  if (!conceptResult) return null;
+  if (conceptResult.next >= trimmed.length || trimmed[conceptResult.next] !== ",") return null;
+
+  const definitionResult = parseField(trimmed, conceptResult.next + 1);
+  if (!definitionResult) return null;
+
+  const concept = conceptResult.value.trim();
+  const definition = definitionResult.value.trim();
+  if (!concept || !definition) return null;
+
+  // Escape HTML to prevent XSS, then convert \n literal to <br> for line breaks
+  return [
+    escapeHtml(concept).replace(/\\n/g, "<br>"),
+    escapeHtml(definition).replace(/\\n/g, "<br>"),
+  ];
+}
+
 function parseCSV(text: string): ParseResult {
   const lines = text.split("\n");
   const valid: ParsedTerm[] = [];
   const invalidLines: number[] = [];
 
   lines.forEach((raw, i) => {
-    const line = raw.trim();
-    if (!line) return;
-    const idx = line.indexOf(",");
-    if (idx === -1) { invalidLines.push(i + 1); return; }
-    const concept = line.slice(0, idx).trim();
-    const definition = line.slice(idx + 1).trim();
-    if (!concept || !definition) { invalidLines.push(i + 1); return; }
-    valid.push({ concept, definition });
+    if (!raw.trim()) return;
+    const result = parseCSVLine(raw);
+    if (!result) { invalidLines.push(i + 1); return; }
+    valid.push({ concept: result[0], definition: result[1] });
   });
 
   return { valid, invalidLines };
@@ -111,9 +157,9 @@ export default function ImportTermsModal({ listId, remainingSlots, onClose, onIm
           {/* Format hint */}
           <div className="bg-slate-50 dark:bg-[#252525] rounded-xl p-4 text-xs text-slate-600 dark:text-slate-300 space-y-1">
             <p className="font-semibold text-slate-700 dark:text-slate-200">Formato esperado</p>
-            <p>Uma linha por termo, conceito e definição separados por vírgula:</p>
-            <pre className="mt-2 font-mono bg-white dark:bg-[#2e2e2e] rounded-lg p-2 text-slate-700 dark:text-slate-200 overflow-x-auto">
-              {`fotossíntese,processo pelo qual plantas convertem luz em energia\nmitose,divisão celular que gera duas células idênticas`}
+            <p>Uma linha por termo, conceito e definição separados por vírgula. Campos com vírgula devem estar entre aspas. Use <code className="bg-white dark:bg-[#2e2e2e] px-1 rounded">\n</code> para quebrar linhas:</p>
+            <pre className="mt-2 font-mono bg-white dark:bg-[#2e2e2e] rounded-lg p-2 text-slate-700 dark:text-slate-200 overflow-x-auto whitespace-pre-wrap">
+              {`fotossíntese,processo pelo qual plantas\\nconvertem luz em energia\n"mitose","divisão celular que gera, duas células"`}
             </pre>
           </div>
 

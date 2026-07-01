@@ -52,17 +52,20 @@ export default function StudyListCard({ list, onDeleted }: Props) {
         <p className="text-sm text-slate-500 dark:text-slate-400 line-clamp-2">{list.description}</p>
       )}
 
-      {list.termsCount > 0 && list.statusSum !== undefined && (() => {
-        const pct = Math.round((list.statusSum / (list.termsCount * 6)) * 100);
+      {list.termsCount > 0 && (() => {
+        const pct = Math.round(((list.statusSum ?? 0) / (list.termsCount * 6)) * 100);
         return (
           <div className="space-y-1">
-            <div className="h-1.5 bg-slate-100 dark:bg-[#2e2e2e] rounded-full overflow-hidden">
+            <div className="flex justify-between text-xs text-slate-400 dark:text-slate-500">
+              <span>Progresso</span>
+              <span>{pct}%</span>
+            </div>
+            <div className="h-2 bg-slate-100 dark:bg-[#2e2e2e] rounded-full overflow-hidden">
               <div
-                className="h-full bg-blue-500 rounded-full"
+                className="h-full bg-blue-500 rounded-full transition-all duration-500"
                 style={{ width: `${pct}%` }}
               />
             </div>
-            <p className="text-xs text-slate-400 dark:text-slate-500 text-right">{pct}%</p>
           </div>
         );
       })()}

@@ -44,10 +44,17 @@ export async function PUT(req: NextRequest, { params }: { params: Promise<Params
   if (definition !== undefined) term.definition = definition.trim();
   if (conceptImage !== undefined) term.conceptImage = conceptImage || undefined;
   if (definitionImage !== undefined) term.definitionImage = definitionImage || undefined;
+  const oldStatus = term.status;
   if (status !== undefined) term.status = Math.min(6, Math.max(0, Number(status)));
+  const statusDelta = term.status - oldStatus;
 
   await term.save();
   await deleteImages(toDelete);
+
+  if (statusDelta !== 0) {
+    await StudyList.findByIdAndUpdate(term.studyListId, { $inc: { statusSum: statusDelta } });
+  }
+
   return NextResponse.json(term);
 }
 
@@ -63,8 +70,11 @@ export async function DELETE(req: NextRequest, { params }: { params: Promise<Par
   if (!term) return NextResponse.json({ error: "Termo não encontrado." }, { status: 404 });
 
   const imageUrls = [term.conceptImage, term.definitionImage];
+  const deletedStatus = term.status;
   await term.deleteOne();
-  await StudyList.findByIdAndUpdate(term.studyListId, { $inc: { termsCount: -1 } });
+  await StudyList.findByIdAndUpdate(term.studyListId, {
+    $inc: { termsCount: -1, statusSum: -deletedStatus },
+  });
   await deleteImages(imageUrls);
 
   return NextResponse.json({ success: true });

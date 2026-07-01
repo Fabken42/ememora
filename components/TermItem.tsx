@@ -7,6 +7,7 @@ import type { ITerm } from "@/models/Term";
 import StatusIcon from "./StatusIcon";
 import TermForm from "./TermForm";
 import toast from "react-hot-toast";
+import { sanitizeHtml } from "@/lib/sanitize";
 
 interface Props {
   term: ITerm & { _id: string };
@@ -27,17 +28,23 @@ export default function TermItem({ term, listId, onChanged, onStatusChanged }: P
     if (newStatus === prev) return;
     setLocalStatus(newStatus);
     setStatusLoading(true);
-    const res = await fetch(`/api/lists/${listId}/terms/${term._id}`, {
-      method: "PUT",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ status: newStatus }),
-    });
-    setStatusLoading(false);
-    if (res.ok) {
-      onStatusChanged ? onStatusChanged(newStatus - prev) : onChanged();
-    } else {
+    try {
+      const res = await fetch(`/api/lists/${listId}/terms/${term._id}`, {
+        method: "PUT",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ status: newStatus }),
+      });
+      if (res.ok) {
+        onStatusChanged ? onStatusChanged(newStatus - prev) : onChanged();
+      } else {
+        setLocalStatus(prev);
+        toast.error("Erro ao atualizar status.");
+      }
+    } catch {
       setLocalStatus(prev);
-      toast.error("Erro ao atualizar status.");
+      toast.error("Erro de conexão ao atualizar status.");
+    } finally {
+      setStatusLoading(false);
     }
   }
 
@@ -77,7 +84,7 @@ export default function TermItem({ term, listId, onChanged, onStatusChanged }: P
       <div className="flex-1 grid sm:grid-cols-2 gap-3 min-w-0">
         <div className="space-y-1.5">
           <p className="text-xs font-semibold text-slate-400 dark:text-slate-500 uppercase tracking-wide">Conceito</p>
-          <div className="text-sm text-slate-800 dark:text-slate-100 break-words rich-content" dangerouslySetInnerHTML={{ __html: term.concept }} />
+          <div className="text-sm text-slate-800 dark:text-slate-100 break-words rich-content" dangerouslySetInnerHTML={{ __html: sanitizeHtml(term.concept) }} />
           {term.conceptImage && (
             <div className="relative h-24 w-full rounded-lg overflow-hidden border border-slate-100 dark:border-[#2e2e2e]">
               <Image src={term.conceptImage} alt="conceito" fill className="object-contain bg-gray-50 dark:bg-[#252525]" />
@@ -86,7 +93,7 @@ export default function TermItem({ term, listId, onChanged, onStatusChanged }: P
         </div>
         <div className="space-y-1.5">
           <p className="text-xs font-semibold text-slate-400 dark:text-slate-500 uppercase tracking-wide">Definição</p>
-          <div className="text-sm text-slate-800 dark:text-slate-100 break-words rich-content" dangerouslySetInnerHTML={{ __html: term.definition }} />
+          <div className="text-sm text-slate-800 dark:text-slate-100 break-words rich-content" dangerouslySetInnerHTML={{ __html: sanitizeHtml(term.definition) }} />
           {term.definitionImage && (
             <div className="relative h-24 w-full rounded-lg overflow-hidden border border-slate-100 dark:border-[#2e2e2e]">
               <Image src={term.definitionImage} alt="definição" fill className="object-contain bg-gray-50 dark:bg-[#252525]" />

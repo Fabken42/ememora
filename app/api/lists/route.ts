@@ -3,6 +3,7 @@ import { getServerSession } from "next-auth";
 import { authOptions } from "@/lib/authOptions";
 import { connectDB } from "@/lib/mongodb";
 import StudyList from "@/models/StudyList";
+import Term from "@/models/Term";
 import { MAX_LISTS } from "@/lib/constants";
 import mongoose from "mongoose";
 
@@ -22,20 +23,31 @@ export async function GET(req: NextRequest) {
 
   const sortOrder = sort === "oldest" ? 1 : -1;
 
-  const lists = await StudyList.aggregate([
-    { $match: query },
-    { $sort: { createdAt: sortOrder } },
-    {
-      $lookup: {
-        from: "terms",
-        localField: "_id",
-        foreignField: "studyListId",
-        as: "_terms",
+  const lists = await StudyList.find(query).sort({ createdAt: sortOrder }).lean();
+
+  // One-time migration: populate statusSum for lists that don't have it yet
+  const needsMigration = lists.filter((l) => l.statusSum == null);
+  if (needsMigration.length > 0) {
+    const agg = await Term.aggregate([
+      {
+        $match: {
+          studyListId: { $in: needsMigration.map((l) => l._id) },
+          userId: new mongoose.Types.ObjectId(userId),
+        },
       },
-    },
-    { $addFields: { statusSum: { $sum: "$_terms.status" } } },
-    { $project: { _terms: 0 } },
-  ]);
+      { $group: { _id: "$studyListId", sum: { $sum: "$status" } } },
+    ]);
+    const sumMap = new Map(agg.map((a) => [String(a._id), a.sum as number]));
+    await Promise.all(
+      needsMigration.map((l) =>
+        StudyList.findByIdAndUpdate(l._id, { statusSum: sumMap.get(String(l._id)) ?? 0 })
+      )
+    );
+    for (const l of lists) {
+      if (l.statusSum == null) l.statusSum = sumMap.get(String(l._id)) ?? 0;
+    }
+  }
+
   return NextResponse.json(lists);
 }
 

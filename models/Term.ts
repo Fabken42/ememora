@@ -14,8 +14,8 @@ export interface ITerm extends Document {
 
 const TermSchema = new Schema<ITerm>(
   {
-    studyListId: { type: Schema.Types.ObjectId, ref: "StudyList", required: true, index: true },
-    userId: { type: Schema.Types.ObjectId, required: true, index: true },
+    studyListId: { type: Schema.Types.ObjectId, ref: "StudyList", required: true },
+    userId: { type: Schema.Types.ObjectId, required: true },
     concept: { type: String, required: true, trim: true, maxlength: 500 },
     definition: { type: String, required: true, trim: true, maxlength: 1000 },
     conceptImage: { type: String },
@@ -24,6 +24,9 @@ const TermSchema = new Schema<ITerm>(
   },
   { timestamps: true }
 );
+
+TermSchema.index({ studyListId: 1, userId: 1 });
+TermSchema.index({ status: 1 });
 
 const Term: Model<ITerm> =
   mongoose.models.Term || mongoose.model<ITerm>("Term", TermSchema);

@@ -2,7 +2,7 @@
 
 import { useEffect, useState, useCallback } from "react";
 import Link from "next/link";
-import { Zap, Layers, Pencil, ChevronLeft, TrendingDown, Upload } from "lucide-react";
+import { Zap, Layers, Pencil, ChevronLeft, TrendingDown, TrendingUp, Upload, Trash2 } from "lucide-react";
 import toast from "react-hot-toast";
 import TermItem from "@/components/TermItem";
 import TermForm from "@/components/TermForm";
@@ -52,7 +52,7 @@ export default function ListClient({ list: initialList }: Props) {
   const [bulkLoading, setBulkLoading] = useState(false);
   const [showImport, setShowImport] = useState(false);
 
-  const fetchTerms = useCallback(async (p = page) => {
+  const fetchTerms = useCallback(async (p: number) => {
     setLoading(true);
     const res = await fetch(`/api/lists/${list._id}/terms?page=${p}&sort=${termSort}`);
     if (res.ok) {
@@ -64,7 +64,7 @@ export default function ListClient({ list: initialList }: Props) {
       setList((l) => ({ ...l, statusSum: data.statusSum }));
     }
     setLoading(false);
-  }, [list._id, termSort, page]); // eslint-disable-line
+  }, [list._id, termSort]);
 
   useEffect(() => { fetchTerms(1); }, [termSort, list._id]); // eslint-disable-line
 
@@ -87,11 +87,50 @@ export default function ListClient({ list: initialList }: Props) {
 
   async function handleBulkDecrement() {
     setBulkLoading(true);
-    const res = await fetch(`/api/lists/${list._id}/terms`, { method: "PATCH" });
+    const res = await fetch(`/api/lists/${list._id}/terms`, {
+      method: "PATCH",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ action: "decrement" }),
+    });
     if (res.ok) {
       fetchTerms(page);
     } else {
       toast.error("Erro ao atualizar status.");
+    }
+    setBulkLoading(false);
+  }
+
+  async function handleBulkIncrement() {
+    setBulkLoading(true);
+    const res = await fetch(`/api/lists/${list._id}/terms`, {
+      method: "PATCH",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ action: "increment" }),
+    });
+    if (res.ok) {
+      fetchTerms(page);
+    } else {
+      toast.error("Erro ao atualizar status.");
+    }
+    setBulkLoading(false);
+  }
+
+  async function handleDeletePerfect() {
+    if (!window.confirm("Excluir todos os termos com status 6 (perfeito)? Essa ação não pode ser desfeita.")) return;
+    setBulkLoading(true);
+    const res = await fetch(`/api/lists/${list._id}/terms`, {
+      method: "PATCH",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ action: "delete_perfect" }),
+    });
+    if (res.ok) {
+      const data = await res.json();
+      setList((l) => ({ ...l, termsCount: l.termsCount - (data.deleted ?? 0) }));
+      fetchTerms(1);
+      if (data.deleted > 0) toast.success(`${data.deleted} ${data.deleted === 1 ? "termo excluído" : "termos excluídos"}.`);
+      else toast("Nenhum termo com status 6 encontrado.");
+    } else {
+      toast.error("Erro ao excluir termos.");
     }
     setBulkLoading(false);
   }
@@ -219,6 +258,24 @@ export default function ListClient({ list: initialList }: Props) {
           >
             <TrendingDown size={13} />
             -1
+          </button>
+          <button
+            onClick={handleBulkIncrement}
+            disabled={bulkLoading || termCountLocal === 0}
+            className="flex items-center gap-1 px-2 py-1 text-xs rounded-lg border border-slate-300 dark:border-[#383838] text-slate-500 dark:text-slate-400 hover:border-green-300 dark:hover:border-green-500 hover:text-green-600 dark:hover:text-green-400 transition-colors disabled:opacity-40 disabled:cursor-not-allowed"
+            title="Aumentar status de todos os termos em 1"
+          >
+            <TrendingUp size={13} />
+            +1
+          </button>
+          <button
+            onClick={handleDeletePerfect}
+            disabled={bulkLoading || termCountLocal === 0}
+            className="flex items-center gap-1 px-2 py-1 text-xs rounded-lg border border-slate-300 dark:border-[#383838] text-slate-500 dark:text-slate-400 hover:border-red-400 dark:hover:border-red-500 hover:text-red-600 dark:hover:text-red-400 transition-colors disabled:opacity-40 disabled:cursor-not-allowed"
+            title="Excluir todos os termos com status perfeito (6)"
+          >
+            <Trash2 size={13} />
+            ★6
           </button>
           {termCountLocal < MAX_TERMS && (
             <button
