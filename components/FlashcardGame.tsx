@@ -232,11 +232,11 @@ export default function FlashcardGame({ listId, initialTerms, onExit }: Props) {
               const backImage = config.swapSides ? term.conceptImage : term.definitionImage;
               return (
                 <>
-                  <p className="text-xs font-semibold text-slate-400 dark:text-slate-500 uppercase tracking-wide">
+                  <p className="text-sm font-semibold text-slate-400 dark:text-slate-500 uppercase tracking-wide">
                     {flipped ? backLabel : frontLabel}
                   </p>
                   <div
-                    className="text-lg text-slate-800 dark:text-slate-100 text-center font-medium rich-content"
+                    className="text-xl text-slate-800 dark:text-slate-100 text-center font-medium rich-content"
                     dangerouslySetInnerHTML={{ __html: sanitizeHtml(flipped ? backText : frontText) }}
                   />
                   {!flipped && frontImage && (
@@ -264,7 +264,7 @@ export default function FlashcardGame({ listId, initialTerms, onExit }: Props) {
           title="Errei (status -1)"
         >
           <ArrowLeft size={22} />
-          <span className="text-xs font-medium">Errei</span>
+          <span className="text-sm font-medium">Errei</span>
         </button>
         <button
           onClick={() => advance("down")}
@@ -272,7 +272,7 @@ export default function FlashcardGame({ listId, initialTerms, onExit }: Props) {
           title="Pular"
         >
           <ArrowDown size={18} />
-          <span className="text-xs font-medium">Pular</span>
+          <span className="text-sm font-medium">Pular</span>
         </button>
         <button
           onClick={() => advance("right")}
@@ -280,7 +280,7 @@ export default function FlashcardGame({ listId, initialTerms, onExit }: Props) {
           title="Acertei (status +1)"
         >
           <ArrowRight size={22} />
-          <span className="text-xs font-medium">Acertei</span>
+          <span className="text-sm font-medium">Acertei</span>
         </button>
       </div>
 

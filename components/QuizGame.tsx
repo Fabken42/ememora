@@ -199,11 +199,11 @@ export default function QuizGame({ listId, initialTerms, allTerms, onExit }: Pro
         <div className="absolute top-3 right-3">
           <StatusIcon status={term.status} size={20} />
         </div>
-        <p className="text-xs font-semibold text-slate-400 dark:text-slate-500 uppercase tracking-wide">
+        <p className="text-sm font-semibold text-slate-400 dark:text-slate-500 uppercase tracking-wide">
           {config.swapSides ? "Definição" : "Conceito"}
         </p>
         <div
-          className="text-lg font-medium text-slate-800 dark:text-slate-100 rich-content"
+          className="text-xl font-medium text-slate-800 dark:text-slate-100 rich-content"
           dangerouslySetInnerHTML={{ __html: sanitizeHtml(config.swapSides ? term.definition : term.concept) }}
         />
         {(config.swapSides ? term.definitionImage : term.conceptImage) && (
@@ -243,7 +243,7 @@ export default function QuizGame({ listId, initialTerms, allTerms, onExit }: Pro
                   <Image src={opt.image} alt="" fill className="object-contain" />
                 </div>
               )}
-              <div className="text-sm font-medium rich-content" dangerouslySetInnerHTML={{ __html: sanitizeHtml(opt.text) }} />
+              <div className="text-base font-medium rich-content" dangerouslySetInnerHTML={{ __html: sanitizeHtml(opt.text) }} />
               {selected !== null && opt.correct && (
                 <CheckCircle2 className="absolute top-3 right-3 text-green-500" size={16} />
               )}
