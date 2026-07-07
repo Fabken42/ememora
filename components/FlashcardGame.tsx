@@ -216,7 +216,7 @@ export default function FlashcardGame({ listId, initialTerms, onExit }: Props) {
           <div
             className={`relative w-full min-h-64 border-2 rounded-2xl shadow-lg p-6 flex flex-col items-center justify-center gap-3 ${
               flipped
-                ? "border-blue-300 dark:border-blue-600 bg-blue-50 dark:bg-blue-900/30"
+                ? "border-blue-300 dark:border-blue-600 bg-white dark:bg-[#1c1c1c]"
                 : "bg-white dark:bg-[#1c1c1c] border-slate-200 dark:border-[#2e2e2e]"
             }`}
           >
@@ -246,7 +246,7 @@ export default function FlashcardGame({ listId, initialTerms, onExit }: Props) {
                   )}
                   {flipped && backImage && (
                     <div className="relative w-full h-40 rounded-xl overflow-hidden border border-slate-100 dark:border-[#2e2e2e]">
-                      <Image src={backImage} alt="" fill className="object-contain bg-blue-50 dark:bg-blue-900/30" />
+                      <Image src={backImage} alt="" fill className="object-contain bg-gray-50 dark:bg-[#252525]" />
                     </div>
                   )}
                 </>

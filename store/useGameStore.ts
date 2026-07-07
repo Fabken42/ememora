@@ -24,7 +24,7 @@ interface GameState {
 
 const defaultConfig: GameConfig = {
   includeMaxStatus: false,
-  showTimer: true,
+  showTimer: false,
   termCount: Infinity,
   swapSides: false,
 };
