@@ -25,7 +25,8 @@ const StudyListSchema = new Schema<IStudyList>(
   { timestamps: true }
 );
 
-StudyListSchema.index({ createdAt: -1 });
+// Composite index for per-user listing with sort by date
+StudyListSchema.index({ userId: 1, createdAt: -1 });
 
 const StudyList: Model<IStudyList> =
   (mongoose.models["StudyList"] as Model<IStudyList>) ||

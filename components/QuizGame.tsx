@@ -210,15 +210,16 @@ export default function QuizGame({ listId, initialTerms, allTerms, onExit }: Pro
           <div className="relative h-40 w-full rounded-xl overflow-hidden border border-slate-100 dark:border-[#2e2e2e]">
             <Image
               src={(config.swapSides ? term.definitionImage : term.conceptImage)!}
-              alt=""
+              alt="imagem do termo"
               fill
+              sizes="(max-width: 640px) 90vw, 512px"
               className="object-contain bg-gray-50 dark:bg-[#252525]"
             />
           </div>
         )}
       </div>
 
-      <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+      <div className="grid grid-cols-2 gap-2 sm:gap-3">
         {options.map((opt, i) => {
           let cls: string;
           if (selected === null) {
@@ -236,14 +237,14 @@ export default function QuizGame({ listId, initialTerms, allTerms, onExit }: Pro
               key={i}
               onClick={() => handleSelect(i)}
               disabled={selected !== null}
-              className={`relative text-left border-2 rounded-xl p-4 transition-all bg-white dark:bg-[#1c1c1c] ${cls}`}
+              className={`relative text-left border-2 rounded-xl p-3 sm:p-4 transition-all bg-white dark:bg-[#1c1c1c] ${cls}`}
             >
               {opt.image && (
                 <div className="relative h-20 w-full rounded-lg overflow-hidden mb-2 border border-slate-100 dark:border-[#2e2e2e]">
-                  <Image src={opt.image} alt="" fill className="object-contain" />
+                  <Image src={opt.image} alt="opção" fill sizes="(max-width: 640px) 90vw, 240px" className="object-contain" />
                 </div>
               )}
-              <div className="text-base font-medium rich-content" dangerouslySetInnerHTML={{ __html: sanitizeHtml(opt.text) }} />
+              <div className="text-sm sm:text-base font-medium rich-content" dangerouslySetInnerHTML={{ __html: sanitizeHtml(opt.text) }} />
               {selected !== null && opt.correct && (
                 <CheckCircle2 className="absolute top-3 right-3 text-green-500" size={16} />
               )}

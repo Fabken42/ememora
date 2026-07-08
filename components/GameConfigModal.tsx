@@ -12,7 +12,7 @@ interface Props {
   listId: string;
   mode: "flashcards" | "quiz";
   onClose: () => void;
-  onStart: (terms: ITerm[]) => void;
+  onStart: (terms: ITerm[], allTerms: ITerm[]) => void;
 }
 
 function shuffle<T>(arr: T[]): T[] {
@@ -51,7 +51,7 @@ export default function GameConfigModal({ listId, mode, onClose, onStart }: Prop
   function handleStart() {
     if (!canStart) { toast.error(`São necessários pelo menos ${MIN_GAME_TERMS} termos.`); return; }
     const selected = shuffle(eligible).slice(0, termCount);
-    onStart(selected);
+    onStart(selected, allTerms);
   }
 
   const modeLabel = mode === "flashcards" ? "Flashcards" : "Quiz";
@@ -64,14 +64,14 @@ export default function GameConfigModal({ listId, mode, onClose, onStart }: Prop
             <Settings size={18} className="text-blue-600 dark:text-blue-400" />
             <h2 className="text-lg font-semibold text-slate-800 dark:text-slate-100">Configurar {modeLabel}</h2>
           </div>
-          <button onClick={onClose} className="text-slate-400 dark:text-slate-500 hover:text-slate-600 dark:hover:text-slate-300">
+          <button onClick={onClose} aria-label="Fechar" className="text-slate-400 dark:text-slate-500 hover:text-slate-600 dark:hover:text-slate-300">
             <X size={20} />
           </button>
         </div>
 
         {loading ? (
           <div className="p-10 flex justify-center">
-            <div className="w-6 h-6 border-2 border-blue-500 border-t-transparent rounded-full animate-spin" />
+            <div role="status" aria-label="Carregando termos..." className="w-6 h-6 border-2 border-blue-500 border-t-transparent rounded-full animate-spin" />
           </div>
         ) : fetchError ? (
           <div className="p-10 flex flex-col items-center gap-4 text-center">

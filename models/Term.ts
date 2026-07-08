@@ -25,8 +25,9 @@ const TermSchema = new Schema<ITerm>(
   { timestamps: true }
 );
 
-TermSchema.index({ studyListId: 1, userId: 1 });
-TermSchema.index({ status: 1 });
+// Composite indices matching actual query patterns
+TermSchema.index({ studyListId: 1, userId: 1, createdAt: -1 });
+TermSchema.index({ studyListId: 1, userId: 1, status: 1, createdAt: -1 });
 
 const Term: Model<ITerm> =
   mongoose.models.Term || mongoose.model<ITerm>("Term", TermSchema);

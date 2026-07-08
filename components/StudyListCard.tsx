@@ -1,5 +1,6 @@
 "use client";
 
+import { memo } from "react";
 import Link from "next/link";
 import { BookOpen, Trash2 } from "lucide-react";
 import { GENRE_LABELS, GENRE_COLORS } from "@/lib/constants";
@@ -13,7 +14,7 @@ interface Props {
   onDeleted?: () => void;
 }
 
-export default function StudyListCard({ list, onDeleted }: Props) {
+const StudyListCard = memo(function StudyListCard({ list, onDeleted }: Props) {
   const router = useRouter();
 
   async function handleDelete(e: React.MouseEvent) {
@@ -41,8 +42,8 @@ export default function StudyListCard({ list, onDeleted }: Props) {
         </h3>
         <button
           onClick={handleDelete}
+          aria-label={`Excluir lista ${list.name}`}
           className="shrink-0 text-slate-300 dark:text-slate-600 hover:text-red-500 dark:hover:text-red-400 transition-colors p-1 -mr-1 -mt-1"
-          title="Excluir lista"
         >
           <Trash2 size={16} />
         </button>
@@ -86,4 +87,6 @@ export default function StudyListCard({ list, onDeleted }: Props) {
       </div>
     </Link>
   );
-}
+});
+
+export default StudyListCard;

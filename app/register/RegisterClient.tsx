@@ -80,7 +80,8 @@ export default function RegisterClient() {
           </div>
           <div className="flex flex-col gap-1">
             <label className="text-xs font-medium text-slate-600 dark:text-slate-400">Senha</label>
-            <input type="password" required placeholder="Mínimo 6 caracteres" value={form.password} onChange={update("password")} className={inputClass} />
+            <input type="password" required placeholder="Mínimo 8 caracteres" value={form.password} onChange={update("password")} className={inputClass} />
+            <p className="text-xs text-slate-400 dark:text-slate-500">Mínimo 8 caracteres, com maiúscula e número.</p>
           </div>
           <div className="flex flex-col gap-1">
             <label className="text-xs font-medium text-slate-600 dark:text-slate-400">Confirmar senha</label>

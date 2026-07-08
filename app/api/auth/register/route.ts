@@ -9,8 +9,14 @@ export async function POST(req: NextRequest) {
     return NextResponse.json({ error: "Preencha todos os campos." }, { status: 400 });
   }
 
-  if (password.length < 6) {
-    return NextResponse.json({ error: "A senha deve ter pelo menos 6 caracteres." }, { status: 400 });
+  if (password.length < 8) {
+    return NextResponse.json({ error: "A senha deve ter pelo menos 8 caracteres." }, { status: 400 });
+  }
+  if (!/[A-Z]/.test(password)) {
+    return NextResponse.json({ error: "A senha deve conter pelo menos uma letra maiúscula." }, { status: 400 });
+  }
+  if (!/[0-9]/.test(password)) {
+    return NextResponse.json({ error: "A senha deve conter pelo menos um número." }, { status: 400 });
   }
 
   const client = await clientPromise;

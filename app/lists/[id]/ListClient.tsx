@@ -14,6 +14,7 @@ import type { Genre } from "@/models/StudyList.types";
 import type { ITerm } from "@/models/Term";
 import { GENRE_LABELS, GENRE_COLORS, MAX_TERMS, TERMS_PER_PAGE } from "@/lib/constants";
 import { useFilterStore } from "@/store/useFilterStore";
+import { SkeletonTermItem } from "@/components/Skeletons";
 
 interface ListData {
   _id: string;
@@ -67,6 +68,15 @@ export default function ListClient({ list: initialList }: Props) {
   }, [list._id, termSort]);
 
   useEffect(() => { fetchTerms(1); }, [termSort, list._id]); // eslint-disable-line
+
+  const handleTermChanged = useCallback(() => {
+    fetchTerms(page);
+    setList((l) => ({ ...l, termsCount: Math.max(0, l.termsCount) }));
+  }, [fetchTerms, page]);
+
+  const handleStatusChanged = useCallback((delta: number) => {
+    setList((l) => ({ ...l, statusSum: l.statusSum + delta }));
+  }, []);
 
   async function saveListEdit(e: React.FormEvent) {
     e.preventDefault();
@@ -323,8 +333,8 @@ export default function ListClient({ list: initialList }: Props) {
       )}
 
       {loading ? (
-        <div className="flex justify-center py-12">
-          <div className="w-6 h-6 border-2 border-blue-500 border-t-transparent rounded-full animate-spin" />
+        <div role="status" aria-label="Carregando termos..." className="space-y-3">
+          {Array.from({ length: 5 }).map((_, i) => <SkeletonTermItem key={i} />)}
         </div>
       ) : terms.length === 0 ? (
         <div className="text-center py-12 text-slate-400 dark:text-slate-500 space-y-2">
@@ -339,13 +349,8 @@ export default function ListClient({ list: initialList }: Props) {
               key={String(term._id)}
               term={term}
               listId={list._id}
-              onChanged={() => {
-                fetchTerms(page);
-                setList((l) => ({ ...l, termsCount: Math.max(0, l.termsCount) }));
-              }}
-              onStatusChanged={(delta) => {
-                setList((l) => ({ ...l, statusSum: l.statusSum + delta }));
-              }}
+              onChanged={handleTermChanged}
+              onStatusChanged={handleStatusChanged}
             />
           ))}
         </div>

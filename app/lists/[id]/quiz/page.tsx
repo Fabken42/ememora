@@ -1,12 +1,11 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import { useParams, useRouter } from "next/navigation";
 import { ChevronLeft } from "lucide-react";
 import GameConfigModal from "@/components/GameConfigModal";
 import QuizGame from "@/components/QuizGame";
 import type { ITerm } from "@/models/Term";
-import toast from "react-hot-toast";
 
 export default function QuizPage() {
   const { id } = useParams<{ id: string }>();
@@ -15,15 +14,10 @@ export default function QuizPage() {
   const [gameTerms, setGameTerms] = useState<ITerm[] | null>(null);
   const [allTerms, setAllTerms] = useState<ITerm[]>([]);
 
-  useEffect(() => {
-    fetch(`/api/lists/${id}/terms?all=true`)
-      .then((r) => r.json())
-      .then((d) => setAllTerms(d.terms ?? []))
-      .catch(() => toast.error("Erro ao carregar termos."));
-  }, [id]);
-
-  function handleStart(terms: ITerm[]) {
+  // allTerms comes from GameConfigModal (which already fetched them) — no duplicate fetch needed
+  function handleStart(terms: ITerm[], all: ITerm[]) {
     setGameTerms(terms);
+    setAllTerms(all);
     setShowConfig(false);
   }
 

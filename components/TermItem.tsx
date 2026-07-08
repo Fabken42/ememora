@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { memo, useState } from "react";
 import Image from "next/image";
 import { Pencil, Trash2, X, ChevronUp, ChevronDown } from "lucide-react";
 import type { ITerm } from "@/models/Term";
@@ -16,7 +16,7 @@ interface Props {
   onStatusChanged?: (delta: number) => void;
 }
 
-export default function TermItem({ term, listId, onChanged, onStatusChanged }: Props) {
+const TermItem = memo(function TermItem({ term, listId, onChanged, onStatusChanged }: Props) {
   const [editing, setEditing] = useState(false);
   const [deleting, setDeleting] = useState(false);
   const [localStatus, setLocalStatus] = useState(term.status);
@@ -87,7 +87,7 @@ export default function TermItem({ term, listId, onChanged, onStatusChanged }: P
           <div className="text-sm text-slate-800 dark:text-slate-100 break-words rich-content" dangerouslySetInnerHTML={{ __html: sanitizeHtml(term.concept) }} />
           {term.conceptImage && (
             <div className="relative h-24 w-full rounded-lg overflow-hidden border border-slate-100 dark:border-[#2e2e2e]">
-              <Image src={term.conceptImage} alt="conceito" fill className="object-contain bg-gray-50 dark:bg-[#252525]" />
+              <Image src={term.conceptImage} alt="imagem do conceito" fill sizes="(max-width: 640px) 90vw, 45vw" className="object-contain bg-gray-50 dark:bg-[#252525]" />
             </div>
           )}
         </div>
@@ -96,7 +96,7 @@ export default function TermItem({ term, listId, onChanged, onStatusChanged }: P
           <div className="text-sm text-slate-800 dark:text-slate-100 break-words rich-content" dangerouslySetInnerHTML={{ __html: sanitizeHtml(term.definition) }} />
           {term.definitionImage && (
             <div className="relative h-24 w-full rounded-lg overflow-hidden border border-slate-100 dark:border-[#2e2e2e]">
-              <Image src={term.definitionImage} alt="definição" fill className="object-contain bg-gray-50 dark:bg-[#252525]" />
+              <Image src={term.definitionImage} alt="imagem da definição" fill sizes="(max-width: 640px) 90vw, 45vw" className="object-contain bg-gray-50 dark:bg-[#252525]" />
             </div>
           )}
         </div>
@@ -107,8 +107,8 @@ export default function TermItem({ term, listId, onChanged, onStatusChanged }: P
           <button
             onClick={() => handleStatusChange(+1)}
             disabled={statusLoading || localStatus >= 6}
+            aria-label="Aumentar status"
             className="p-1 text-slate-300 dark:text-slate-600 hover:text-green-500 dark:hover:text-green-400 transition-colors disabled:opacity-30 disabled:cursor-not-allowed"
-            title="Status +1"
           >
             <ChevronUp size={15} />
           </button>
@@ -116,8 +116,8 @@ export default function TermItem({ term, listId, onChanged, onStatusChanged }: P
           <button
             onClick={() => handleStatusChange(-1)}
             disabled={statusLoading || localStatus <= 0}
+            aria-label="Diminuir status"
             className="p-1 text-slate-300 dark:text-slate-600 hover:text-red-400 dark:hover:text-red-400 transition-colors disabled:opacity-30 disabled:cursor-not-allowed"
-            title="Status -1"
           >
             <ChevronDown size={15} />
           </button>
@@ -125,16 +125,16 @@ export default function TermItem({ term, listId, onChanged, onStatusChanged }: P
         <div className="flex gap-1">
           <button
             onClick={() => setEditing(true)}
+            aria-label="Editar termo"
             className="p-1.5 text-slate-400 dark:text-slate-500 hover:text-blue-600 dark:hover:text-blue-400 transition-colors"
-            title="Editar"
           >
             <Pencil size={15} />
           </button>
           <button
             onClick={handleDelete}
             disabled={deleting}
+            aria-label="Excluir termo"
             className="p-1.5 text-slate-400 dark:text-slate-500 hover:text-red-500 dark:hover:text-red-400 transition-colors disabled:opacity-50"
-            title="Excluir"
           >
             <Trash2 size={15} />
           </button>
@@ -142,4 +142,6 @@ export default function TermItem({ term, listId, onChanged, onStatusChanged }: P
       </div>
     </div>
   );
-}
+});
+
+export default TermItem;

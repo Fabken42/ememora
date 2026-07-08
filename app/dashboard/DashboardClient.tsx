@@ -1,9 +1,10 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import { Plus, SlidersHorizontal } from "lucide-react";
 import toast from "react-hot-toast";
 import StudyListCard from "@/components/StudyListCard";
+import { SkeletonListCard } from "@/components/Skeletons";
 import CreateListModal from "@/components/CreateListModal";
 import type { IStudyList } from "@/models/StudyList";
 import { GENRES } from "@/models/StudyList.types";
@@ -17,16 +18,16 @@ export default function DashboardClient() {
   const [showModal, setShowModal] = useState(false);
   const [showFilters, setShowFilters] = useState(false);
 
-  async function fetchLists() {
+  const fetchLists = useCallback(async () => {
     setLoading(true);
     const params = new URLSearchParams({ sort: dashboardSort });
     dashboardGenres.forEach((g) => params.append("genre", g));
     const res = await fetch(`/api/lists?${params}`);
     if (res.ok) setLists(await res.json());
     setLoading(false);
-  }
+  }, [dashboardSort, dashboardGenres]);
 
-  useEffect(() => { fetchLists(); }, [dashboardSort, dashboardGenres]); // eslint-disable-line
+  useEffect(() => { fetchLists(); }, [fetchLists]);
 
   function handleCreateClick() {
     if (lists.length >= MAX_LISTS) {
@@ -125,8 +126,8 @@ export default function DashboardClient() {
       )}
 
       {loading ? (
-        <div className="flex justify-center py-16">
-          <div className="w-7 h-7 border-2 border-blue-500 border-t-transparent rounded-full animate-spin" />
+        <div role="status" aria-label="Carregando listas..." className="grid sm:grid-cols-2 lg:grid-cols-3 gap-4">
+          {Array.from({ length: 6 }).map((_, i) => <SkeletonListCard key={i} />)}
         </div>
       ) : lists.length === 0 ? (
         <div className="text-center py-20 text-slate-400 dark:text-slate-500 space-y-3">
