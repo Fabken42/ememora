@@ -54,11 +54,11 @@ export default function RegisterClient() {
   }
 
   const inputClass =
-    "w-full rounded-lg border border-slate-300 dark:border-[#383838] bg-white dark:bg-[#252525] text-slate-800 dark:text-slate-100 px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500";
+    "w-full rounded-lg border border-slate-300 dark:border-[#2f3d5a] bg-white dark:bg-[#1a2336] text-slate-800 dark:text-slate-100 px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500";
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-blue-50 to-slate-100 dark:from-[#121212] dark:to-[#121212] flex items-center justify-center p-4">
-      <div className="bg-white dark:bg-[#1c1c1c] rounded-2xl shadow-xl w-full max-w-sm p-8 flex flex-col items-center gap-6">
+    <div className="min-h-screen bg-gradient-to-br from-blue-50 to-slate-100 dark:from-[#0a0f1f] dark:to-[#0a0f1f] flex items-center justify-center p-4">
+      <div className="bg-white dark:bg-[#111827] rounded-2xl shadow-xl w-full max-w-sm p-8 flex flex-col items-center gap-6">
         <div className="flex flex-col items-center gap-2">
           <div className="bg-blue-600 text-white rounded-2xl p-3">
             <BookOpen size={32} />

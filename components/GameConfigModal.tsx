@@ -58,8 +58,8 @@ export default function GameConfigModal({ listId, mode, onClose, onStart }: Prop
 
   return (
     <div className="fixed inset-0 bg-black/50 z-50 flex items-center justify-center p-4">
-      <div className="bg-white dark:bg-[#1c1c1c] rounded-2xl w-full max-w-sm shadow-2xl">
-        <div className="flex items-center justify-between p-6 border-b border-slate-100 dark:border-[#2e2e2e]">
+      <div className="bg-white dark:bg-[#111827] rounded-2xl w-full max-w-sm shadow-2xl">
+        <div className="flex items-center justify-between p-6 border-b border-slate-100 dark:border-[#243049]">
           <div className="flex items-center gap-2">
             <Settings size={18} className="text-blue-600 dark:text-blue-400" />
             <h2 className="text-lg font-semibold text-slate-800 dark:text-slate-100">Configurar {modeLabel}</h2>
@@ -96,7 +96,7 @@ export default function GameConfigModal({ listId, mode, onClose, onStart }: Prop
               </div>
               <div
                 onClick={() => setConfig({ includeMaxStatus: !config.includeMaxStatus })}
-                className={`relative w-10 h-6 rounded-full transition-colors cursor-pointer ${config.includeMaxStatus ? "bg-blue-600" : "bg-slate-300 dark:bg-[#383838]"}`}
+                className={`relative w-10 h-6 rounded-full transition-colors cursor-pointer ${config.includeMaxStatus ? "bg-blue-600" : "bg-slate-300 dark:bg-[#2f3d5a]"}`}
               >
                 <div className={`absolute top-1 w-4 h-4 bg-white rounded-full shadow transition-transform ${config.includeMaxStatus ? "translate-x-5" : "translate-x-1"}`} />
               </div>
@@ -109,7 +109,7 @@ export default function GameConfigModal({ listId, mode, onClose, onStart }: Prop
               </div>
               <div
                 onClick={() => setConfig({ showTimer: !config.showTimer })}
-                className={`relative w-10 h-6 rounded-full transition-colors cursor-pointer ${config.showTimer ? "bg-blue-600" : "bg-slate-300 dark:bg-[#383838]"}`}
+                className={`relative w-10 h-6 rounded-full transition-colors cursor-pointer ${config.showTimer ? "bg-blue-600" : "bg-slate-300 dark:bg-[#2f3d5a]"}`}
               >
                 <div className={`absolute top-1 w-4 h-4 bg-white rounded-full shadow transition-transform ${config.showTimer ? "translate-x-5" : "translate-x-1"}`} />
               </div>
@@ -126,7 +126,7 @@ export default function GameConfigModal({ listId, mode, onClose, onStart }: Prop
               </div>
               <div
                 onClick={() => setConfig({ swapSides: !config.swapSides })}
-                className={`relative w-10 h-6 rounded-full transition-colors cursor-pointer ${config.swapSides ? "bg-blue-600" : "bg-slate-300 dark:bg-[#383838]"}`}
+                className={`relative w-10 h-6 rounded-full transition-colors cursor-pointer ${config.swapSides ? "bg-blue-600" : "bg-slate-300 dark:bg-[#2f3d5a]"}`}
               >
                 <div className={`absolute top-1 w-4 h-4 bg-white rounded-full shadow transition-transform ${config.swapSides ? "translate-x-5" : "translate-x-1"}`} />
               </div>
@@ -143,7 +143,7 @@ export default function GameConfigModal({ listId, mode, onClose, onStart }: Prop
                 max={maxCount}
                 value={termCount}
                 onChange={(e) => setConfig({ termCount: parseInt(e.target.value) || MIN_GAME_TERMS })}
-                className="mt-1 w-full rounded-lg border border-slate-300 dark:border-[#383838] bg-white dark:bg-[#252525] text-slate-800 dark:text-slate-100 px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
+                className="mt-1 w-full rounded-lg border border-slate-300 dark:border-[#2f3d5a] bg-white dark:bg-[#1a2336] text-slate-800 dark:text-slate-100 px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
               />
             </div>
 
@@ -159,7 +159,7 @@ export default function GameConfigModal({ listId, mode, onClose, onStart }: Prop
             <div className="flex justify-end gap-2 pt-1">
               <button
                 onClick={onClose}
-                className="px-4 py-2 text-sm rounded-lg border border-slate-300 dark:border-[#383838] text-slate-600 dark:text-slate-300 hover:bg-slate-50 dark:hover:bg-[#252525]"
+                className="px-4 py-2 text-sm rounded-lg border border-slate-300 dark:border-[#2f3d5a] text-slate-600 dark:text-slate-300 hover:bg-slate-50 dark:hover:bg-[#1a2336]"
               >
                 Cancelar
               </button>

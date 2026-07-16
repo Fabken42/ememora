@@ -59,13 +59,13 @@ export default function RichTextEditor({ value, onChange, placeholder, autoFocus
     `p-1.5 rounded transition-colors ${
       active
         ? "bg-blue-100 dark:bg-blue-900/40 text-blue-700 dark:text-blue-300"
-        : "text-slate-500 dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-[#2e2e2e] hover:text-slate-800 dark:hover:text-slate-200"
+        : "text-slate-500 dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-[#243049] hover:text-slate-800 dark:hover:text-slate-200"
     }`;
 
   return (
-    <div className="rounded-lg border border-slate-300 dark:border-[#383838] bg-white dark:bg-[#252525] focus-within:ring-2 focus-within:ring-blue-500 overflow-hidden">
+    <div className="rounded-lg border border-slate-300 dark:border-[#2f3d5a] bg-white dark:bg-[#1a2336] focus-within:ring-2 focus-within:ring-blue-500 overflow-hidden">
       {/* toolbar */}
-      <div className="flex items-center gap-0.5 px-2 py-1.5 border-b border-slate-200 dark:border-[#383838]">
+      <div className="flex items-center gap-0.5 px-2 py-1.5 border-b border-slate-200 dark:border-[#2f3d5a]">
         <button
           type="button"
           title="Negrito (Ctrl+B)"

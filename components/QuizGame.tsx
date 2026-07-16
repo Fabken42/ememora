@@ -6,6 +6,7 @@ import { useRouter } from "next/navigation";
 import { Clock, RotateCcw, CheckCircle2, XCircle, Trophy, BookOpen } from "lucide-react";
 import { useGameStore } from "@/store/useGameStore";
 import StatusIcon from "@/components/StatusIcon";
+import CopyButton from "@/components/CopyButton";
 import type { ITerm } from "@/models/Term";
 import toast from "react-hot-toast";
 import { sanitizeHtml } from "@/lib/sanitize";
@@ -78,7 +79,7 @@ function Summary({ correct, total, elapsed, onReset, onBackToList }: SummaryProp
       <div className="flex gap-3">
         <button
           onClick={onBackToList}
-          className="flex items-center gap-2 px-5 py-3 bg-slate-100 dark:bg-[#252525] text-slate-700 dark:text-slate-200 rounded-xl hover:bg-slate-200 dark:hover:bg-[#2f2f2f] transition-colors"
+          className="flex items-center gap-2 px-5 py-3 bg-slate-100 dark:bg-[#1a2336] text-slate-700 dark:text-slate-200 rounded-xl hover:bg-slate-200 dark:hover:bg-[#26324c] transition-colors"
         >
           <BookOpen size={16} />
           Voltar para lista
@@ -187,7 +188,7 @@ export default function QuizGame({ listId, initialTerms, allTerms, onExit }: Pro
   return (
     <div className="flex flex-col gap-6 py-6 px-4 max-w-lg mx-auto">
       {config.showTimer && (
-        <div className="flex items-center gap-1.5 text-sm text-slate-500 dark:text-slate-400 bg-slate-100 dark:bg-[#252525] px-3 py-1.5 rounded-full self-center">
+        <div className="flex items-center gap-1.5 text-sm text-slate-500 dark:text-slate-400 bg-slate-100 dark:bg-[#1a2336] px-3 py-1.5 rounded-full self-center">
           <Clock size={14} />
           {formatTime(elapsed)}
         </div>
@@ -195,7 +196,10 @@ export default function QuizGame({ listId, initialTerms, allTerms, onExit }: Pro
 
       <div className="text-sm text-slate-500 dark:text-slate-400 text-center">{currentIndex + 1} / {terms.length}</div>
 
-      <div className="relative bg-white dark:bg-[#1c1c1c] border border-slate-200 dark:border-[#2e2e2e] rounded-2xl p-6 text-center space-y-3">
+      <div className="relative bg-white dark:bg-[#111827] border border-slate-200 dark:border-[#243049] rounded-2xl p-6 text-center space-y-3">
+        <div className="absolute top-2 left-2">
+          <CopyButton html={config.swapSides ? term.definition : term.concept} label="Copiar pergunta" />
+        </div>
         <div className="absolute top-3 right-3">
           <StatusIcon status={term.status} size={20} />
         </div>
@@ -207,13 +211,13 @@ export default function QuizGame({ listId, initialTerms, allTerms, onExit }: Pro
           dangerouslySetInnerHTML={{ __html: sanitizeHtml(config.swapSides ? term.definition : term.concept) }}
         />
         {(config.swapSides ? term.definitionImage : term.conceptImage) && (
-          <div className="relative h-40 w-full rounded-xl overflow-hidden border border-slate-100 dark:border-[#2e2e2e]">
+          <div className="relative h-40 w-full rounded-xl overflow-hidden border border-slate-100 dark:border-[#243049]">
             <Image
               src={(config.swapSides ? term.definitionImage : term.conceptImage)!}
               alt="imagem do termo"
               fill
               sizes="(max-width: 640px) 90vw, 512px"
-              className="object-contain bg-gray-50 dark:bg-[#252525]"
+              className="object-contain bg-gray-50 dark:bg-[#1a2336]"
             />
           </div>
         )}
@@ -223,13 +227,13 @@ export default function QuizGame({ listId, initialTerms, allTerms, onExit }: Pro
         {options.map((opt, i) => {
           let cls: string;
           if (selected === null) {
-            cls = "border-slate-200 dark:border-[#383838] text-slate-700 dark:text-slate-200 hover:border-blue-300 hover:bg-blue-50 dark:hover:border-blue-500 dark:hover:bg-blue-900/30";
+            cls = "border-slate-200 dark:border-[#2f3d5a] text-slate-700 dark:text-slate-200 hover:border-blue-300 hover:bg-blue-50 dark:hover:border-blue-500 dark:hover:bg-blue-900/30";
           } else if (opt.correct) {
             cls = "border-green-400 bg-green-50 dark:bg-green-900/30 text-green-800 dark:text-green-300";
           } else if (i === selected) {
             cls = "border-red-400 bg-red-50 dark:bg-red-900/30 text-red-700 dark:text-red-400";
           } else {
-            cls = "border-slate-100 dark:border-[#2e2e2e] text-slate-400 dark:text-slate-500 opacity-60";
+            cls = "border-slate-100 dark:border-[#243049] text-slate-400 dark:text-slate-500 opacity-60";
           }
 
           return (
@@ -237,10 +241,10 @@ export default function QuizGame({ listId, initialTerms, allTerms, onExit }: Pro
               key={i}
               onClick={() => handleSelect(i)}
               disabled={selected !== null}
-              className={`relative text-left border-2 rounded-xl p-3 sm:p-4 transition-all bg-white dark:bg-[#1c1c1c] ${cls}`}
+              className={`relative text-left border-2 rounded-xl p-3 sm:p-4 transition-all bg-white dark:bg-[#111827] ${cls}`}
             >
               {opt.image && (
-                <div className="relative h-20 w-full rounded-lg overflow-hidden mb-2 border border-slate-100 dark:border-[#2e2e2e]">
+                <div className="relative h-20 w-full rounded-lg overflow-hidden mb-2 border border-slate-100 dark:border-[#243049]">
                   <Image src={opt.image} alt="opção" fill sizes="(max-width: 640px) 90vw, 240px" className="object-contain" />
                 </div>
               )}

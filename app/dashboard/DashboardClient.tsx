@@ -62,7 +62,7 @@ export default function DashboardClient() {
             className={`flex items-center gap-2 px-3 py-2 rounded-xl text-sm border transition-colors ${
               showFilters || dashboardGenres.length > 0
                 ? "bg-blue-50 dark:bg-blue-900/40 border-blue-300 dark:border-blue-600 text-blue-700 dark:text-blue-300"
-                : "border-slate-300 dark:border-[#383838] text-slate-600 dark:text-slate-300 hover:bg-slate-50 dark:hover:bg-[#252525]"
+                : "border-slate-300 dark:border-[#2f3d5a] text-slate-600 dark:text-slate-300 hover:bg-slate-50 dark:hover:bg-[#1a2336]"
             }`}
           >
             <SlidersHorizontal size={15} />
@@ -84,13 +84,13 @@ export default function DashboardClient() {
       </div>
 
       {showFilters && (
-        <div className="bg-white dark:bg-[#1c1c1c] border border-slate-200 dark:border-[#2e2e2e] rounded-2xl p-4 space-y-3">
+        <div className="bg-white dark:bg-[#111827] border border-slate-200 dark:border-[#243049] rounded-2xl p-4 space-y-3">
           <div className="flex items-center justify-between">
             <p className="text-sm font-medium text-slate-700 dark:text-slate-200">Ordenação</p>
             <select
               value={dashboardSort}
               onChange={(e) => setDashboardSort(e.target.value as "newest" | "oldest")}
-              className="text-sm border border-slate-300 dark:border-[#383838] bg-white dark:bg-[#252525] text-slate-800 dark:text-slate-100 rounded-lg px-2 py-1.5 focus:outline-none focus:ring-1 focus:ring-blue-500"
+              className="text-sm border border-slate-300 dark:border-[#2f3d5a] bg-white dark:bg-[#1a2336] text-slate-800 dark:text-slate-100 rounded-lg px-2 py-1.5 focus:outline-none focus:ring-1 focus:ring-blue-500"
             >
               <option value="newest">Mais recentes</option>
               <option value="oldest">Mais antigas</option>
@@ -106,7 +106,7 @@ export default function DashboardClient() {
                   className={`text-xs px-3 py-1.5 rounded-full border transition-colors ${
                     dashboardGenres.includes(g)
                       ? "bg-blue-600 border-blue-600 text-white"
-                      : "border-slate-300 dark:border-[#383838] text-slate-600 dark:text-slate-300 hover:border-blue-400 dark:hover:border-blue-500"
+                      : "border-slate-300 dark:border-[#2f3d5a] text-slate-600 dark:text-slate-300 hover:border-blue-400 dark:hover:border-blue-500"
                   }`}
                 >
                   {GENRE_LABELS[g]}

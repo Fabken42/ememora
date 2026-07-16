@@ -7,6 +7,7 @@ import { ArrowLeft, ArrowRight, ArrowDown, Clock, RotateCcw, Trophy, BookOpen } 
 import { useRouter } from "next/navigation";
 import { useGameStore } from "@/store/useGameStore";
 import StatusIcon from "@/components/StatusIcon";
+import CopyButton from "@/components/CopyButton";
 import type { ITerm } from "@/models/Term";
 import toast from "react-hot-toast";
 import { sanitizeHtml } from "@/lib/sanitize";
@@ -43,7 +44,7 @@ function Summary({ results, elapsed, onReset, onBackToList }: SummaryProps) {
           <p className="text-2xl font-bold text-red-500">{incorrect}</p>
           <p className="text-xs text-red-700 dark:text-red-400 mt-1">Erros</p>
         </div>
-        <div className="bg-slate-50 dark:bg-[#252525] rounded-xl p-4">
+        <div className="bg-slate-50 dark:bg-[#1a2336] rounded-xl p-4">
           <p className="text-2xl font-bold text-slate-500 dark:text-slate-300">{skipped}</p>
           <p className="text-xs text-slate-600 dark:text-slate-400 mt-1">Pulados</p>
         </div>
@@ -56,7 +57,7 @@ function Summary({ results, elapsed, onReset, onBackToList }: SummaryProps) {
       <div className="flex gap-3">
         <button
           onClick={onBackToList}
-          className="flex items-center gap-2 px-5 py-3 bg-slate-100 dark:bg-[#252525] text-slate-700 dark:text-slate-200 rounded-xl hover:bg-slate-200 dark:hover:bg-[#2f2f2f] transition-colors"
+          className="flex items-center gap-2 px-5 py-3 bg-slate-100 dark:bg-[#1a2336] text-slate-700 dark:text-slate-200 rounded-xl hover:bg-slate-200 dark:hover:bg-[#26324c] transition-colors"
         >
           <BookOpen size={16} />
           Voltar para lista
@@ -185,11 +186,14 @@ export default function FlashcardGame({ listId, initialTerms, onExit }: Props) {
   }
 
   const term = terms[currentIndex];
+  const visibleText = flipped
+    ? (config.swapSides ? term.concept : term.definition)
+    : (config.swapSides ? term.definition : term.concept);
 
   return (
     <div {...handlers} className="flex flex-col items-center gap-6 py-6 px-4 select-none">
       {config.showTimer && (
-        <div className="flex items-center gap-1.5 text-sm text-slate-500 dark:text-slate-400 bg-slate-100 dark:bg-[#252525] px-3 py-1.5 rounded-full">
+        <div className="flex items-center gap-1.5 text-sm text-slate-500 dark:text-slate-400 bg-slate-100 dark:bg-[#1a2336] px-3 py-1.5 rounded-full">
           <Clock size={14} />
           {formatTime(elapsed)}
         </div>
@@ -216,10 +220,13 @@ export default function FlashcardGame({ listId, initialTerms, onExit }: Props) {
           <div
             className={`relative w-full min-h-64 border-2 rounded-2xl shadow-lg p-6 flex flex-col items-center justify-center gap-3 ${
               flipped
-                ? "border-blue-300 dark:border-blue-600 bg-white dark:bg-[#1c1c1c]"
-                : "bg-white dark:bg-[#1c1c1c] border-slate-200 dark:border-[#2e2e2e]"
+                ? "border-blue-300 dark:border-blue-600 bg-white dark:bg-[#111827]"
+                : "bg-white dark:bg-[#111827] border-slate-200 dark:border-[#243049]"
             }`}
           >
+            <div className="absolute top-2 left-2">
+              <CopyButton html={visibleText} label="Copiar texto do card" />
+            </div>
             <div className="absolute top-3 right-3">
               <StatusIcon status={term.status} size={20} />
             </div>
@@ -240,13 +247,13 @@ export default function FlashcardGame({ listId, initialTerms, onExit }: Props) {
                     dangerouslySetInnerHTML={{ __html: sanitizeHtml(flipped ? backText : frontText) }}
                   />
                   {!flipped && frontImage && (
-                    <div className="relative w-full h-40 rounded-xl overflow-hidden border border-slate-100 dark:border-[#2e2e2e]">
-                      <Image src={frontImage} alt="" fill className="object-contain bg-gray-50 dark:bg-[#252525]" />
+                    <div className="relative w-full h-40 rounded-xl overflow-hidden border border-slate-100 dark:border-[#243049]">
+                      <Image src={frontImage} alt="" fill className="object-contain bg-gray-50 dark:bg-[#1a2336]" />
                     </div>
                   )}
                   {flipped && backImage && (
-                    <div className="relative w-full h-40 rounded-xl overflow-hidden border border-slate-100 dark:border-[#2e2e2e]">
-                      <Image src={backImage} alt="" fill className="object-contain bg-gray-50 dark:bg-[#252525]" />
+                    <div className="relative w-full h-40 rounded-xl overflow-hidden border border-slate-100 dark:border-[#243049]">
+                      <Image src={backImage} alt="" fill className="object-contain bg-gray-50 dark:bg-[#1a2336]" />
                     </div>
                   )}
                 </>
@@ -268,7 +275,7 @@ export default function FlashcardGame({ listId, initialTerms, onExit }: Props) {
         </button>
         <button
           onClick={() => advance("down")}
-          className="flex flex-col items-center gap-1 p-3 bg-gray-50 dark:bg-[#252525] text-slate-500 dark:text-slate-400 rounded-2xl hover:bg-slate-100 dark:hover:bg-slate-600 transition-colors active:scale-95"
+          className="flex flex-col items-center gap-1 p-3 bg-gray-50 dark:bg-[#1a2336] text-slate-500 dark:text-slate-400 rounded-2xl hover:bg-slate-100 dark:hover:bg-slate-600 transition-colors active:scale-95"
           title="Pular"
         >
           <ArrowDown size={18} />

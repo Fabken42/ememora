@@ -28,7 +28,7 @@ export default function QuizPage() {
 
   return (
     <div className="max-w-lg mx-auto min-h-screen">
-      <div className="sticky top-0 bg-white dark:bg-[#121212] border-b border-slate-100 dark:border-[#2e2e2e] z-10">
+      <div className="sticky top-0 bg-white dark:bg-[#0a0f1f] border-b border-slate-100 dark:border-[#243049] z-10">
         <div className="flex items-center gap-3 px-4 py-3">
           <button
             onClick={() => router.push(`/lists/${id}`)}

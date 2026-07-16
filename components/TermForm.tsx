@@ -91,7 +91,7 @@ export default function TermForm({ listId, term, onSaved, onCancel, autoFocus, s
           <button
             type="button"
             onClick={onCancel}
-            className="px-4 py-2 text-sm rounded-lg border border-slate-300 dark:border-[#383838] text-slate-600 dark:text-slate-300 hover:bg-slate-50 dark:hover:bg-[#252525] transition-colors"
+            className="px-4 py-2 text-sm rounded-lg border border-slate-300 dark:border-[#2f3d5a] text-slate-600 dark:text-slate-300 hover:bg-slate-50 dark:hover:bg-[#1a2336] transition-colors"
           >
             Cancelar
           </button>

@@ -34,7 +34,7 @@ const StudyListCard = memo(function StudyListCard({ list, onDeleted }: Props) {
   return (
     <Link
       href={`/lists/${list._id}`}
-      className="group relative bg-white dark:bg-[#1c1c1c] rounded-xl border border-slate-200 dark:border-[#2e2e2e] p-5 hover:border-blue-300 dark:hover:border-blue-500 hover:shadow-md transition-all flex flex-col gap-3"
+      className="group relative bg-white dark:bg-[#111827] rounded-xl border border-slate-200 dark:border-[#243049] p-5 hover:border-blue-300 dark:hover:border-blue-500 hover:shadow-md transition-all flex flex-col gap-3"
     >
       <div className="flex items-start justify-between gap-2">
         <h3 className="font-semibold text-slate-800 dark:text-slate-100 text-lg leading-tight line-clamp-2 group-hover:text-blue-600 dark:group-hover:text-blue-400 transition-colors">
@@ -61,7 +61,7 @@ const StudyListCard = memo(function StudyListCard({ list, onDeleted }: Props) {
               <span>Progresso</span>
               <span>{pct}%</span>
             </div>
-            <div className="h-2 bg-slate-100 dark:bg-[#2e2e2e] rounded-full overflow-hidden">
+            <div className="h-2 bg-slate-100 dark:bg-[#243049] rounded-full overflow-hidden">
               <div
                 className="h-full bg-blue-500 rounded-full transition-all duration-500"
                 style={{ width: `${pct}%` }}

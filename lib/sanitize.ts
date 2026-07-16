@@ -9,6 +9,15 @@ export function sanitizeHtml(dirty: string): string {
   return _purify.sanitize(dirty);
 }
 
+export function htmlToPlainText(html: string): string {
+  if (typeof window === "undefined") {
+    return html.replace(/<[^>]*>/g, "").trim();
+  }
+  const div = document.createElement("div");
+  div.innerHTML = sanitizeHtml(html);
+  return (div.textContent ?? "").trim();
+}
+
 export function escapeHtml(text: string): string {
   return text
     .replace(/&/g, "&amp;")

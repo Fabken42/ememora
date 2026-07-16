@@ -80,14 +80,14 @@ const TermItem = memo(function TermItem({ term, listId, onChanged, onStatusChang
   }
 
   return (
-    <div className="bg-white dark:bg-[#1c1c1c] border border-slate-200 dark:border-[#2e2e2e] rounded-xl p-4 flex gap-4">
+    <div className="bg-white dark:bg-[#111827] border border-slate-200 dark:border-[#243049] rounded-xl p-4 flex gap-4">
       <div className="flex-1 grid sm:grid-cols-2 gap-3 min-w-0">
         <div className="space-y-1.5">
           <p className="text-xs font-semibold text-slate-400 dark:text-slate-500 uppercase tracking-wide">Conceito</p>
           <div className="text-sm text-slate-800 dark:text-slate-100 break-words rich-content" dangerouslySetInnerHTML={{ __html: sanitizeHtml(term.concept) }} />
           {term.conceptImage && (
-            <div className="relative h-24 w-full rounded-lg overflow-hidden border border-slate-100 dark:border-[#2e2e2e]">
-              <Image src={term.conceptImage} alt="imagem do conceito" fill sizes="(max-width: 640px) 90vw, 45vw" className="object-contain bg-gray-50 dark:bg-[#252525]" />
+            <div className="relative h-24 w-full rounded-lg overflow-hidden border border-slate-100 dark:border-[#243049]">
+              <Image src={term.conceptImage} alt="imagem do conceito" fill sizes="(max-width: 640px) 90vw, 45vw" className="object-contain bg-gray-50 dark:bg-[#1a2336]" />
             </div>
           )}
         </div>
@@ -95,8 +95,8 @@ const TermItem = memo(function TermItem({ term, listId, onChanged, onStatusChang
           <p className="text-xs font-semibold text-slate-400 dark:text-slate-500 uppercase tracking-wide">Definição</p>
           <div className="text-sm text-slate-800 dark:text-slate-100 break-words rich-content" dangerouslySetInnerHTML={{ __html: sanitizeHtml(term.definition) }} />
           {term.definitionImage && (
-            <div className="relative h-24 w-full rounded-lg overflow-hidden border border-slate-100 dark:border-[#2e2e2e]">
-              <Image src={term.definitionImage} alt="imagem da definição" fill sizes="(max-width: 640px) 90vw, 45vw" className="object-contain bg-gray-50 dark:bg-[#252525]" />
+            <div className="relative h-24 w-full rounded-lg overflow-hidden border border-slate-100 dark:border-[#243049]">
+              <Image src={term.definitionImage} alt="imagem da definição" fill sizes="(max-width: 640px) 90vw, 45vw" className="object-contain bg-gray-50 dark:bg-[#1a2336]" />
             </div>
           )}
         </div>

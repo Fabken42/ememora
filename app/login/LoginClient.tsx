@@ -37,11 +37,11 @@ export default function LoginClient() {
   }
 
   const inputClass =
-    "w-full rounded-lg border border-slate-300 dark:border-[#383838] bg-white dark:bg-[#252525] text-slate-800 dark:text-slate-100 px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500";
+    "w-full rounded-lg border border-slate-300 dark:border-[#2f3d5a] bg-white dark:bg-[#1a2336] text-slate-800 dark:text-slate-100 px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500";
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-blue-50 to-slate-100 dark:from-[#121212] dark:to-[#121212] flex items-center justify-center p-4">
-      <div className="bg-white dark:bg-[#1c1c1c] rounded-2xl shadow-xl w-full max-w-sm p-8 flex flex-col items-center gap-6">
+    <div className="min-h-screen bg-gradient-to-br from-blue-50 to-slate-100 dark:from-[#0a0f1f] dark:to-[#0a0f1f] flex items-center justify-center p-4">
+      <div className="bg-white dark:bg-[#111827] rounded-2xl shadow-xl w-full max-w-sm p-8 flex flex-col items-center gap-6">
         <div className="flex flex-col items-center gap-2">
           <div className="bg-blue-600 text-white rounded-2xl p-3">
             <BookOpen size={32} />
@@ -71,14 +71,14 @@ export default function LoginClient() {
         </form>
 
         <div className="w-full flex items-center gap-3">
-          <div className="flex-1 h-px bg-slate-100 dark:bg-[#2e2e2e]" />
+          <div className="flex-1 h-px bg-slate-100 dark:bg-[#243049]" />
           <span className="text-xs text-slate-400 dark:text-slate-500">ou</span>
-          <div className="flex-1 h-px bg-slate-100 dark:bg-[#2e2e2e]" />
+          <div className="flex-1 h-px bg-slate-100 dark:bg-[#243049]" />
         </div>
 
         <button
           onClick={() => signIn("google", { callbackUrl: "/dashboard" })}
-          className="w-full flex items-center justify-center gap-3 border border-slate-300 dark:border-[#383838] rounded-xl px-4 py-3 text-sm font-medium text-slate-700 dark:text-slate-200 hover:bg-slate-50 dark:hover:bg-[#252525] hover:border-slate-400 dark:hover:border-[#4a4a4a] transition-all"
+          className="w-full flex items-center justify-center gap-3 border border-slate-300 dark:border-[#2f3d5a] rounded-xl px-4 py-3 text-sm font-medium text-slate-700 dark:text-slate-200 hover:bg-slate-50 dark:hover:bg-[#1a2336] hover:border-slate-400 dark:hover:border-[#3d4d6e] transition-all"
         >
           <svg width="18" height="18" viewBox="0 0 24 24">
             <path fill="#4285F4" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"/>
