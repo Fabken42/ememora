@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState, useCallback } from "react";
+import { useEffect, useState, useCallback, useRef } from "react";
 import Link from "next/link";
 import { Zap, Layers, Pencil, ChevronLeft, TrendingDown, TrendingUp, Upload, Trash2 } from "lucide-react";
 import toast from "react-hot-toast";
@@ -53,18 +53,28 @@ export default function ListClient({ list: initialList }: Props) {
   const [bulkLoading, setBulkLoading] = useState(false);
   const [showImport, setShowImport] = useState(false);
 
+  // Guards against out-of-order responses: when the user changes sort/page
+  // quickly, only the latest request is allowed to update state.
+  const reqIdRef = useRef(0);
+
   const fetchTerms = useCallback(async (p: number) => {
+    const reqId = ++reqIdRef.current;
     setLoading(true);
-    const res = await fetch(`/api/lists/${list._id}/terms?page=${p}&sort=${termSort}`);
-    if (res.ok) {
+    try {
+      const res = await fetch(`/api/lists/${list._id}/terms?page=${p}&sort=${termSort}`);
+      if (reqId !== reqIdRef.current) return; // a newer request superseded this one
+      if (!res.ok) throw new Error();
       const data: TermsResponse = await res.json();
       setTerms(data.terms);
       setPage(data.page);
       setPages(data.pages);
       setTotal(data.total);
       setList((l) => ({ ...l, statusSum: data.statusSum }));
+    } catch {
+      if (reqId === reqIdRef.current) toast.error("Erro ao carregar termos.");
+    } finally {
+      if (reqId === reqIdRef.current) setLoading(false);
     }
-    setLoading(false);
   }, [list._id, termSort]);
 
   useEffect(() => { fetchTerms(1); }, [termSort, list._id]); // eslint-disable-line

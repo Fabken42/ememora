@@ -38,10 +38,13 @@ export async function GET(req: NextRequest) {
       { $group: { _id: "$studyListId", sum: { $sum: "$status" } } },
     ]);
     const sumMap = new Map(agg.map((a) => [String(a._id), a.sum as number]));
-    await Promise.all(
-      needsMigration.map((l) =>
-        StudyList.findByIdAndUpdate(l._id, { statusSum: sumMap.get(String(l._id)) ?? 0 })
-      )
+    await StudyList.bulkWrite(
+      needsMigration.map((l) => ({
+        updateOne: {
+          filter: { _id: l._id },
+          update: { $set: { statusSum: sumMap.get(String(l._id)) ?? 0 } },
+        },
+      }))
     );
     for (const l of lists) {
       if (l.statusSum == null) l.statusSum = sumMap.get(String(l._id)) ?? 0;

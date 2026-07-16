@@ -12,12 +12,9 @@ export default function QuizPage() {
   const router = useRouter();
   const [showConfig, setShowConfig] = useState(true);
   const [gameTerms, setGameTerms] = useState<ITerm[] | null>(null);
-  const [allTerms, setAllTerms] = useState<ITerm[]>([]);
 
-  // allTerms comes from GameConfigModal (which already fetched them) — no duplicate fetch needed
-  function handleStart(terms: ITerm[], all: ITerm[]) {
+  function handleStart(terms: ITerm[]) {
     setGameTerms(terms);
-    setAllTerms(all);
     setShowConfig(false);
   }
 
@@ -53,7 +50,7 @@ export default function QuizPage() {
         <QuizGame
           listId={id}
           initialTerms={gameTerms}
-          allTerms={allTerms}
+          allTerms={gameTerms}
           onExit={handleExit}
         />
       )}

@@ -15,7 +15,7 @@ export default function FlashcardsPage() {
   const [showConfig, setShowConfig] = useState(true);
   const [gameTerms, setGameTerms] = useState<ITerm[] | null>(null);
 
-  function handleStart(terms: ITerm[], _allTerms: ITerm[]) {
+  function handleStart(terms: ITerm[]) {
     setGameTerms(terms);
     setShowConfig(false);
   }

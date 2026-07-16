@@ -5,14 +5,44 @@ import { connectDB } from "@/lib/mongodb";
 import StudyList from "@/models/StudyList";
 import Term from "@/models/Term";
 import { MAX_TERMS, TERMS_PER_PAGE } from "@/lib/constants";
+import { SRS_INTERVALS_DAYS } from "@/lib/srs";
 import mongoose from "mongoose";
+
+const MS_PER_DAY = 86_400_000;
+
+/**
+ * Aggregation-pipeline expression that reschedules `nextReviewDate` from the
+ * term's (already updated) status — the bulk equivalent of `computeNextReview`.
+ * Keeps SRS "due" state consistent after bulk +1/-1 adjustments.
+ */
+function rescheduleStage() {
+  const startOfToday = new Date();
+  startOfToday.setHours(0, 0, 0, 0);
+  return {
+    $set: {
+      nextReviewDate: {
+        $add: [
+          startOfToday,
+          {
+            $multiply: [
+              { $arrayElemAt: [[...SRS_INTERVALS_DAYS], "$status"] },
+              MS_PER_DAY,
+            ],
+          },
+        ],
+      },
+    },
+  };
+}
 
 async function getOwnedList(listId: string, userId: string) {
   if (!mongoose.isValidObjectId(listId)) return null;
   return StudyList.findOne({
     _id: new mongoose.Types.ObjectId(listId),
     userId: new mongoose.Types.ObjectId(userId),
-  });
+  })
+    .select("_id termsCount statusSum")
+    .lean();
 }
 
 async function recalcStatusSum(listId: mongoose.Types.ObjectId, userId: mongoose.Types.ObjectId) {
@@ -39,7 +69,6 @@ export async function GET(req: NextRequest, { params }: { params: Promise<{ id: 
   const { searchParams } = new URL(req.url);
   const page = Math.max(1, parseInt(searchParams.get("page") ?? "1"));
   const sort = searchParams.get("sort") ?? "default";
-  const all = searchParams.get("all") === "true";
 
   let sortQuery: Record<string, 1 | -1> = { createdAt: -1 };
   if (sort === "reverse") sortQuery = { createdAt: 1 };
@@ -49,30 +78,17 @@ export async function GET(req: NextRequest, { params }: { params: Promise<{ id: 
   const userObjectId = new mongoose.Types.ObjectId(userId);
   const query = { studyListId: list._id, userId: userObjectId };
 
-  if (all) {
-    const terms = await Term.find(query).sort(sortQuery).lean();
-    return NextResponse.json({ terms, total: terms.length, page: 1, pages: 1 });
-  }
+  // Trust the denormalized counters (kept in sync via $inc on every mutation).
+  // This avoids a full-collection aggregate + a countDocuments on every page load.
+  const total = list.termsCount ?? 0;
+  const statusSum = list.statusSum ?? 0;
+  const pages = Math.max(1, Math.ceil(total / TERMS_PER_PAGE));
 
-  const [statusAgg, total] = await Promise.all([
-    Term.aggregate([
-      { $match: { studyListId: list._id, userId: userObjectId } },
-      { $group: { _id: null, sum: { $sum: "$status" } } },
-    ]),
-    Term.countDocuments(query),
-  ]);
-  const statusSum: number = statusAgg[0]?.sum ?? 0;
-
-  // Keep denormalized field in sync (self-healing for existing data)
-  if (list.statusSum !== statusSum) {
-    await StudyList.findByIdAndUpdate(list._id, { statusSum });
-  }
-
-  const pages = Math.ceil(total / TERMS_PER_PAGE);
   const terms = await Term.find(query)
     .sort(sortQuery)
     .skip((page - 1) * TERMS_PER_PAGE)
     .limit(TERMS_PER_PAGE)
+    .select("concept definition conceptImage definitionImage status nextReviewDate")
     .lean();
 
   return NextResponse.json({ terms, total, page, pages, statusSum });
@@ -140,7 +156,7 @@ export async function PATCH(req: NextRequest, { params }: { params: Promise<{ id
   if (action === "increment") {
     await Term.updateMany(
       { studyListId: list._id, userId: userObjectId, status: { $lt: 6 } },
-      { $inc: { status: 1 } }
+      [{ $set: { status: { $add: ["$status", 1] } } }, rescheduleStage()]
     );
     await recalcStatusSum(list._id, userObjectId);
     return NextResponse.json({ success: true });
@@ -163,7 +179,7 @@ export async function PATCH(req: NextRequest, { params }: { params: Promise<{ id
   // default: decrement
   await Term.updateMany(
     { studyListId: list._id, userId: userObjectId, status: { $gt: 0 } },
-    { $inc: { status: -1 } }
+    [{ $set: { status: { $subtract: ["$status", 1] } } }, rescheduleStage()]
   );
   await recalcStatusSum(list._id, userObjectId);
 
