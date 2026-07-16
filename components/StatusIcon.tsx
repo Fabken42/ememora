@@ -1,15 +1,16 @@
-import { Frown, Angry, Annoyed, Meh, Smile, Laugh, SmilePlus } from "lucide-react";
-import type { LucideProps } from "lucide-react";
-import type { ElementType } from "react";
+import { Angry, Cry, Embarrassed, Joyful, Smile, Cool, Loveface } from "@tiktok-emojis/react";
+import type { ComponentType } from "react";
 
-const STATUS_CONFIG: { Icon: ElementType<LucideProps>; className: string; label: string }[] = [
-  { Icon: Angry,     className: "text-red-600",     label: "Não lembro" },
-  { Icon: Frown,     className: "text-rose-500",    label: "Muito difícil" },
-  { Icon: Annoyed,   className: "text-orange-500",  label: "Difícil" },
-  { Icon: Meh,       className: "text-yellow-300",   label: "Neutro" },
-  { Icon: Smile,     className: "text-lime-500",    label: "Bom" },
-  { Icon: Laugh,     className: "text-emerald-500",   label: "Ótimo" },
-  { Icon: SmilePlus,     className: "text-indigo-600",  label: "Dominado" },
+type EmojiProps = Partial<Record<"width" | "height" | "size", string | number>>;
+
+const STATUS_CONFIG: { Emoji: ComponentType<EmojiProps>; label: string }[] = [
+  { Emoji: Cry,    label: "Não lembro" },
+  { Emoji: Angry,      label: "Muito difícil" },
+  { Emoji: Embarrassed,     label: "Difícil" },
+  { Emoji: Smile, label: "Neutro" },
+  { Emoji: Joyful,    label: "Bom" },
+  { Emoji: Cool,    label: "Ótimo" },
+  { Emoji: Loveface,     label: "Dominado" },
 ];
 
 export { STATUS_CONFIG };
@@ -21,13 +22,15 @@ interface Props {
 
 export default function StatusIcon({ status, size = 22 }: Props) {
   const cfg = STATUS_CONFIG[Math.max(0, Math.min(6, status))] ?? STATUS_CONFIG[3];
-  const { Icon, className, label } = cfg;
+  const { Emoji, label } = cfg;
   return (
-    <Icon
-      size={size}
-      className={className}
+    <span
+      role="img"
       aria-label={label}
-      strokeWidth={2}
-    />
+      title={label}
+      className="inline-flex items-center justify-center leading-none align-middle"
+    >
+      <Emoji size={size} />
+    </span>
   );
 }
