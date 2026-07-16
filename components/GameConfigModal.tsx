@@ -5,6 +5,7 @@ import { X, Play, Settings, AlertCircle, RefreshCw } from "lucide-react";
 import { useGameStore } from "@/store/useGameStore";
 import type { ITerm } from "@/models/Term";
 import { MIN_GAME_TERMS } from "@/lib/constants";
+import { isDue } from "@/lib/srs";
 import StatusIcon from "./StatusIcon";
 import toast from "react-hot-toast";
 
@@ -50,7 +51,11 @@ export default function GameConfigModal({ listId, mode, onClose, onStart }: Prop
 
   function handleStart() {
     if (!canStart) { toast.error(`São necessários pelo menos ${MIN_GAME_TERMS} termos.`); return; }
-    const selected = shuffle(eligible).slice(0, termCount);
+    // Leitner under the hood: prioritise terms that are due for review, then
+    // fill the remaining slots with the rest. Order is shuffled for natural play.
+    const due = shuffle(eligible.filter((t) => isDue(t.nextReviewDate)));
+    const notDue = shuffle(eligible.filter((t) => !isDue(t.nextReviewDate)));
+    const selected = shuffle([...due, ...notDue].slice(0, termCount));
     onStart(selected, allTerms);
   }
 

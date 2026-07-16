@@ -3,7 +3,7 @@
 import { useState, useEffect, useRef } from "react";
 import Image from "next/image";
 import { useSwipeable } from "react-swipeable";
-import { ArrowLeft, ArrowRight, ArrowDown, Clock, RotateCcw, Trophy, BookOpen } from "lucide-react";
+import { ArrowLeft, ArrowRight, ArrowDown, Clock, RotateCcw, Trophy, BookOpen, Repeat } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { useGameStore } from "@/store/useGameStore";
 import StatusIcon from "@/components/StatusIcon";
@@ -23,12 +23,14 @@ interface SummaryProps {
   elapsed: number;
   onReset: () => void;
   onBackToList: () => void;
+  onReviewMistakes: () => void;
 }
 
-function Summary({ results, elapsed, onReset, onBackToList }: SummaryProps) {
+function Summary({ results, elapsed, onReset, onBackToList, onReviewMistakes }: SummaryProps) {
   const correct = results.filter((r) => r.correct === true).length;
   const incorrect = results.filter((r) => r.correct === false).length;
   const skipped = results.filter((r) => r.correct === null).length;
+  const reviewable = incorrect + skipped;
 
   return (
     <div className="flex flex-col items-center gap-6 py-12 px-4 text-center">
@@ -53,6 +55,16 @@ function Summary({ results, elapsed, onReset, onBackToList }: SummaryProps) {
       <p className="text-sm text-slate-500 dark:text-slate-400 flex items-center gap-1">
         <Clock size={14} /> Tempo total: {formatTime(elapsed)}
       </p>
+
+      {reviewable > 0 && (
+        <button
+          onClick={onReviewMistakes}
+          className="flex items-center gap-2 px-5 py-3 bg-amber-500 text-white rounded-xl hover:bg-amber-600 transition-colors"
+        >
+          <Repeat size={16} />
+          Revisar os que errei ({reviewable})
+        </button>
+      )}
 
       <div className="flex gap-3">
         <button
@@ -86,6 +98,7 @@ export default function FlashcardGame({ listId, initialTerms, onExit }: Props) {
   const [elapsed, setElapsed] = useState(0);
   const [animDir, setAnimDir] = useState<"left" | "right" | "down" | null>(null);
   const timeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+  const savedRef = useRef(false);
   const router = useRouter();
   const isDone = currentIndex >= terms.length && terms.length > 0;
 
@@ -108,6 +121,41 @@ export default function FlashcardGame({ listId, initialTerms, onExit }: Props) {
     const id = setInterval(() => setElapsed(Date.now() - startTime), 1000);
     return () => clearInterval(id);
   }, [config.showTimer, startTime, isDone]);
+
+  // Persist the finished session once (for stats/history).
+  useEffect(() => {
+    if (!isDone || savedRef.current || results.length === 0) return;
+    savedRef.current = true;
+    const correct = results.filter((r) => r.correct === true).length;
+    const incorrect = results.filter((r) => r.correct === false).length;
+    const skipped = results.filter((r) => r.correct === null).length;
+    fetch("/api/study-sessions", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        studyListId: listId,
+        mode: "flashcards",
+        total: results.length,
+        correct,
+        incorrect,
+        skipped,
+        durationMs: startTime ? Date.now() - startTime : 0,
+      }),
+    }).catch(() => {});
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [isDone]);
+
+  function reviewMistakes() {
+    const mistakeTerms = terms.filter((t) => {
+      const r = results.find((x) => x.termId === String(t._id));
+      return r && r.correct !== true;
+    });
+    if (mistakeTerms.length === 0) return;
+    savedRef.current = false;
+    setAnimDir(null);
+    setFlipped(false);
+    setTerms(mistakeTerms);
+  }
 
   function updateStatus(term: ITerm, delta: number) {
     const newStatus = Math.min(6, Math.max(0, term.status + delta));
@@ -165,6 +213,7 @@ export default function FlashcardGame({ listId, initialTerms, onExit }: Props) {
       <Summary
         results={results}
         elapsed={elapsed}
+        onReviewMistakes={reviewMistakes}
         onReset={() => {
           reset();
           onExit();
@@ -224,11 +273,11 @@ export default function FlashcardGame({ listId, initialTerms, onExit }: Props) {
                 : "bg-white dark:bg-[#111827] border-slate-200 dark:border-[#243049]"
             }`}
           >
-            <div className="absolute top-2 left-2">
-              <CopyButton html={visibleText} label="Copiar texto do card" />
-            </div>
-            <div className="absolute top-3 right-3">
+            <div className="absolute top-3 left-3">
               <StatusIcon status={term.status} size={20} />
+            </div>
+            <div className="absolute top-2 right-2">
+              <CopyButton html={visibleText} label="Copiar texto do card" />
             </div>
             {(() => {
               const frontLabel = config.swapSides ? "Definição" : "Conceito";

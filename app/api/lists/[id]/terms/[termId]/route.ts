@@ -6,6 +6,7 @@ import Term from "@/models/Term";
 import StudyList from "@/models/StudyList";
 import mongoose from "mongoose";
 import { deleteImages } from "@/lib/cloudinary";
+import { computeNextReview } from "@/lib/srs";
 
 type Params = { id: string; termId: string };
 
@@ -45,7 +46,11 @@ export async function PUT(req: NextRequest, { params }: { params: Promise<Params
   if (conceptImage !== undefined) term.conceptImage = conceptImage || undefined;
   if (definitionImage !== undefined) term.definitionImage = definitionImage || undefined;
   const oldStatus = term.status;
-  if (status !== undefined) term.status = Math.min(6, Math.max(0, Number(status)));
+  if (status !== undefined) {
+    term.status = Math.min(6, Math.max(0, Number(status)));
+    // A status change means the term was just reviewed — reschedule it (SRS).
+    term.nextReviewDate = computeNextReview(term.status);
+  }
   const statusDelta = term.status - oldStatus;
 
   await term.save();

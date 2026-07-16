@@ -1,9 +1,9 @@
 "use client";
 
-import { useState, useEffect, useCallback } from "react";
+import { useState, useEffect, useCallback, useRef } from "react";
 import Image from "next/image";
 import { useRouter } from "next/navigation";
-import { Clock, RotateCcw, CheckCircle2, XCircle, Trophy, BookOpen } from "lucide-react";
+import { Clock, RotateCcw, CheckCircle2, XCircle, Trophy, BookOpen, Repeat } from "lucide-react";
 import { useGameStore } from "@/store/useGameStore";
 import StatusIcon from "@/components/StatusIcon";
 import CopyButton from "@/components/CopyButton";
@@ -53,9 +53,11 @@ interface SummaryProps {
   elapsed: number;
   onReset: () => void;
   onBackToList: () => void;
+  onReviewMistakes: () => void;
 }
 
-function Summary({ correct, total, elapsed, onReset, onBackToList }: SummaryProps) {
+function Summary({ correct, total, elapsed, onReset, onBackToList, onReviewMistakes }: SummaryProps) {
+  const mistakes = total - correct;
   return (
     <div className="flex flex-col items-center gap-6 py-12 px-4 text-center">
       <Trophy size={48} className="text-blue-500" />
@@ -75,6 +77,16 @@ function Summary({ correct, total, elapsed, onReset, onBackToList }: SummaryProp
       <p className="text-sm text-slate-500 dark:text-slate-400 flex items-center gap-1">
         <Clock size={14} /> Tempo total: {formatTime(elapsed)}
       </p>
+
+      {mistakes > 0 && (
+        <button
+          onClick={onReviewMistakes}
+          className="flex items-center gap-2 px-5 py-3 bg-amber-500 text-white rounded-xl hover:bg-amber-600 transition-colors"
+        >
+          <Repeat size={16} />
+          Revisar os que errei ({mistakes})
+        </button>
+      )}
 
       <div className="flex gap-3">
         <button
@@ -108,13 +120,17 @@ export default function QuizGame({ listId, initialTerms, allTerms, onExit }: Pro
   const [options, setOptions] = useState<Option[]>([]);
   const [selected, setSelected] = useState<number | null>(null);
   const [elapsed, setElapsed] = useState(0);
+  const savedRef = useRef(false);
   const router = useRouter();
 
   const buildCurrentOptions = useCallback((idx: number) => {
-    if (idx < initialTerms.length) {
-      setOptions(buildOptions(initialTerms[idx], allTerms, config.swapSides));
+    // Read the live term list from the store so this also works for the
+    // "review mistakes" round, where the active set differs from initialTerms.
+    const src = useGameStore.getState().terms;
+    if (idx < src.length) {
+      setOptions(buildOptions(src[idx], allTerms, config.swapSides));
     }
-  }, [initialTerms, allTerms, config.swapSides]);
+  }, [allTerms, config.swapSides]);
 
   useEffect(() => {
     setTerms(initialTerms);
@@ -127,6 +143,41 @@ export default function QuizGame({ listId, initialTerms, allTerms, onExit }: Pro
     const id = setInterval(() => setElapsed(Date.now() - startTime), 1000);
     return () => clearInterval(id);
   }, [config.showTimer, startTime]);
+
+  const isDone = currentIndex >= terms.length && terms.length > 0;
+
+  // Persist the finished session once (for stats/history).
+  useEffect(() => {
+    if (!isDone || savedRef.current || results.length === 0) return;
+    savedRef.current = true;
+    const correct = results.filter((r) => r.correct).length;
+    fetch("/api/study-sessions", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        studyListId: listId,
+        mode: "quiz",
+        total: results.length,
+        correct,
+        incorrect: results.length - correct,
+        skipped: 0,
+        durationMs: startTime ? Date.now() - startTime : 0,
+      }),
+    }).catch(() => {});
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [isDone]);
+
+  function reviewMistakes() {
+    const mistakeTerms = terms.filter((t) => {
+      const r = results.find((x) => x.termId === String(t._id));
+      return r && !r.correct;
+    });
+    if (mistakeTerms.length === 0) return;
+    savedRef.current = false;
+    setSelected(null);
+    setTerms(mistakeTerms);
+    buildCurrentOptions(0);
+  }
 
   async function handleSelect(idx: number) {
     if (selected !== null) return;
@@ -153,8 +204,6 @@ export default function QuizGame({ listId, initialTerms, allTerms, onExit }: Pro
     }, 1200);
   }
 
-  const isDone = currentIndex >= terms.length && terms.length > 0;
-
   if (isDone) {
     const correct = results.filter((r) => r.correct).length;
     const totalElapsed = startTime ? Date.now() - startTime : elapsed;
@@ -163,6 +212,7 @@ export default function QuizGame({ listId, initialTerms, allTerms, onExit }: Pro
         correct={correct}
         total={terms.length}
         elapsed={totalElapsed}
+        onReviewMistakes={reviewMistakes}
         onReset={() => {
           reset();
           onExit();
@@ -197,11 +247,11 @@ export default function QuizGame({ listId, initialTerms, allTerms, onExit }: Pro
       <div className="text-sm text-slate-500 dark:text-slate-400 text-center">{currentIndex + 1} / {terms.length}</div>
 
       <div className="relative bg-white dark:bg-[#111827] border border-slate-200 dark:border-[#243049] rounded-2xl p-6 text-center space-y-3">
-        <div className="absolute top-2 left-2">
-          <CopyButton html={config.swapSides ? term.definition : term.concept} label="Copiar pergunta" />
-        </div>
-        <div className="absolute top-3 right-3">
+        <div className="absolute top-3 left-3">
           <StatusIcon status={term.status} size={20} />
+        </div>
+        <div className="absolute top-2 right-2">
+          <CopyButton html={config.swapSides ? term.definition : term.concept} label="Copiar pergunta" />
         </div>
         <p className="text-sm font-semibold text-slate-400 dark:text-slate-500 uppercase tracking-wide">
           {config.swapSides ? "Definição" : "Conceito"}

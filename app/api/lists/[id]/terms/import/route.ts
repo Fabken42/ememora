@@ -34,12 +34,14 @@ export async function POST(req: NextRequest, { params }: { params: Promise<{ id:
   if (remaining <= 0)
     return NextResponse.json({ error: `Limite de ${MAX_TERMS} termos atingido.` }, { status: 400 });
 
+  const now = new Date();
   const toInsert = terms.slice(0, remaining).map((t) => ({
     studyListId: list._id,
     userId: new mongoose.Types.ObjectId(userId),
     concept: t.concept.trim(),
     definition: t.definition.trim(),
     status: 3,
+    nextReviewDate: now,
   }));
 
   await Term.insertMany(toInsert);

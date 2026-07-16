@@ -5,9 +5,10 @@ export interface ITerm extends Document {
   userId: mongoose.Types.ObjectId;
   concept: string;
   definition: string;
-  conceptImage?: string; 
+  conceptImage?: string;
   definitionImage?: string;
   status: number;
+  nextReviewDate: Date;
   createdAt: Date;
   updatedAt: Date;
 }
@@ -21,6 +22,7 @@ const TermSchema = new Schema<ITerm>(
     conceptImage: { type: String },
     definitionImage: { type: String },
     status: { type: Number, default: 3, min: 0, max: 6 },
+    nextReviewDate: { type: Date, default: Date.now },
   },
   { timestamps: true }
 );
@@ -28,6 +30,8 @@ const TermSchema = new Schema<ITerm>(
 // Composite indices matching actual query patterns
 TermSchema.index({ studyListId: 1, userId: 1, createdAt: -1 });
 TermSchema.index({ studyListId: 1, userId: 1, status: 1, createdAt: -1 });
+// Supports "due for review" queries (global and per-list)
+TermSchema.index({ userId: 1, nextReviewDate: 1 });
 
 const Term: Model<ITerm> =
   mongoose.models.Term || mongoose.model<ITerm>("Term", TermSchema);

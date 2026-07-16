@@ -5,7 +5,7 @@ import { signOut, useSession } from "next-auth/react";
 import { useTheme } from "next-themes";
 import Link from "next/link";
 import Image from "next/image";
-import { BookOpen, LogOut, LayoutDashboard, Sun, Moon } from "lucide-react";
+import { BookOpen, LogOut, LayoutDashboard, Sun, Moon, BarChart3 } from "lucide-react";
 
 export default function Navbar() {
   const { data: session } = useSession();
@@ -24,13 +24,22 @@ export default function Navbar() {
 
         <div className="flex items-center gap-3">
           {session?.user && (
-            <Link
-              href="/dashboard"
-              className="hidden sm:flex items-center gap-1.5 text-sm text-slate-600 dark:text-slate-300 hover:text-blue-600 dark:hover:text-blue-400 transition-colors"
-            >
-              <LayoutDashboard size={16} />
-              Dashboard
-            </Link>
+            <>
+              <Link
+                href="/dashboard"
+                className="hidden sm:flex items-center gap-1.5 text-sm text-slate-600 dark:text-slate-300 hover:text-blue-600 dark:hover:text-blue-400 transition-colors"
+              >
+                <LayoutDashboard size={16} />
+                Dashboard
+              </Link>
+              <Link
+                href="/stats"
+                className="hidden sm:flex items-center gap-1.5 text-sm text-slate-600 dark:text-slate-300 hover:text-blue-600 dark:hover:text-blue-400 transition-colors"
+              >
+                <BarChart3 size={16} />
+                Estatísticas
+              </Link>
+            </>
           )}
 
           {mounted && (
